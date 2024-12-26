@@ -19,6 +19,9 @@ public class Biblioteca {
     private ArrayList<Libro> libros;
     private ArrayList<ArticuloCientifico> articulosCientificos;
 
+    public Biblioteca() {
+    }
+
     public Biblioteca(String nombre, ArrayList<Usuario> usuarios, ArrayList<Periodico> periodicos, ArrayList<Revista> revistas, ArrayList<VideoCientifico> videos, ArrayList<Libro> libros, ArrayList<ArticuloCientifico> articulosCientificos) {
         this.nombre = nombre;
         this.usuarios = usuarios;
