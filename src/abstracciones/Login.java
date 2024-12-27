@@ -13,15 +13,17 @@ public class Login {
     private String telefono;
     private String nomnreUsuario;
     private String perfil;
+    private String id_biblioteca;
 
     public Login() {
     }
 
-    public Login(String direccion, String telefono, String nomnreUsuario, String perfil) {
+    public Login(String direccion, String telefono, String nomnreUsuario, String perfil,String id_biblioteca) {
         this.direccion = direccion;
         this.telefono = telefono;
         this.nomnreUsuario = nomnreUsuario;
         this.perfil = perfil;
+        this.id_biblioteca = id_biblioteca;
     }
 
     public String getDireccion() {
@@ -54,5 +56,13 @@ public class Login {
     
     public String getPerfil(){
         return perfil;
+    }
+    
+    public String getId_biblioteca() {
+        return id_biblioteca;
+    }
+
+    public void setId_biblioteca(String id_biblioteca) {
+        this.id_biblioteca = id_biblioteca;
     }
 }

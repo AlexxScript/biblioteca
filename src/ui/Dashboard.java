@@ -1,6 +1,13 @@
 package ui;
 
 import abstracciones.Login;
+import javax.swing.table.DefaultTableModel;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import utils.Conexion;
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -11,11 +18,84 @@ import abstracciones.Login;
  * @author alejandro ameneyro
  */
 public class Dashboard extends javax.swing.JFrame {
-    /**
-     * Creates new form Dashboard
-     */
+    
+    DefaultTableModel modeloLibro;
+    DefaultTableModel modeloPeriodico;
+    DefaultTableModel modeloRevista;
+    DefaultTableModel modeloArtIn;
+    DefaultTableModel modeloVideo;
+    
     public Dashboard(Login lg) {
         initComponents();
+        String[] tituloLibro = {"titulo","editorial","pasta","volumen","tema","pagina","tipoLibro","autores","fecha de lanzamiento","idioma","cantidad","pasillo","repisa","anaquel","seccion"};
+        String[] tituloPeriodico = {"nombre","distribuidor","empresa","tipo de revista","titulo articulo","autores","fecha de lanzamiento","cantidad","pasillo","repisa","anaquel","seccion"};
+        String[] tituloRevista = {"nombre","distribuidor","empresa","tipo de revista","tema","pagina","titulo articulo","autores","fecha de lanzamiento","cantidad","pasillo","repisa","anaquel","seccion"};
+        String[] tituloArtIn = {"area de especialidad","fecha escritura","instituto de proveniencia","autores","fecha de lanzamiento","idioma","cantidad","pasillo","repisa","anaquel","seccion"};
+        String[] tituloVideo = {"nombre","duracion","autores","fecha de lanzamiento","idioma","cantidad","pasillo","repisa","anaquel","seccion"};
+        modeloLibro = new DefaultTableModel(null,tituloLibro);
+        modeloPeriodico = new DefaultTableModel(null,tituloPeriodico);
+        modeloRevista = new DefaultTableModel(null,tituloRevista);
+        modeloArtIn = new DefaultTableModel(null,tituloArtIn);
+        modeloVideo = new DefaultTableModel(null,tituloVideo);
+        tblLibros.setModel(modeloLibro);
+        tblPeriodico.setModel(modeloPeriodico);
+        tblRevista.setModel(modeloRevista);
+        tblArtInves.setModel(modeloArtIn);
+        tblVideo.setModel(modeloVideo);
+        cargarDatosTablaLibro();
+    }
+    
+    public void cargarDatosTablaLibro() {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            con = Conexion.conectar();
+            String query = "SELECT l.titulo, l.editorial, l.pasta, l.volumen, l.tema, l.pagina, " +
+                           "l.tipoLibro, e.autores, e.fechaLanz AS fecha_lanzamiento, e.idioma, " +
+                           "e.cantidad, u.pasillo, u.repisa, u.anaquel, u.seccion " +
+                           "FROM libro l " +
+                           "JOIN ejemplar e ON l.libro_id = e.id " +
+                           "JOIN ubicacion u ON e.ubicacion_id = u.id";
+
+            ps = con.prepareStatement(query);
+            rs = ps.executeQuery();
+            modeloLibro.setRowCount(0);
+
+            while (rs.next()) {
+                Object[] fila = new Object[15];
+                fila[0] = rs.getString("titulo");
+                fila[1] = rs.getString("editorial");
+                fila[2] = rs.getString("pasta");
+                fila[3] = rs.getString("volumen");
+                fila[4] = rs.getString("tema");
+                fila[5] = rs.getInt("pagina");
+                fila[6] = rs.getString("tipoLibro");
+                fila[7] = rs.getString("autores");
+                fila[8] = rs.getDate("fecha_lanzamiento");
+                fila[9] = rs.getString("idioma");
+                fila[10] = rs.getInt("cantidad");
+                fila[11] = rs.getString("pasillo");
+                fila[12] = rs.getString("repisa");
+                fila[13] = rs.getString("anaquel");
+                fila[14] = rs.getString("seccion");
+
+                modeloLibro.addRow(fila);
+            }
+
+            tblLibros.setModel(modeloLibro);
+        } catch (SQLException e) {
+            System.err.println("Error al cargar los datos: " + e);
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar recursos: " + e);
+            }
+        }
     }
 
     /**
@@ -27,17 +107,210 @@ public class Dashboard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
+        otro = new javax.swing.JScrollPane();
+        tblLibros = new javax.swing.JTable();
+        jPanel2 = new javax.swing.JPanel();
+        otro1 = new javax.swing.JScrollPane();
+        tblPeriodico = new javax.swing.JTable();
+        jPanel3 = new javax.swing.JPanel();
+        otro2 = new javax.swing.JScrollPane();
+        tblRevista = new javax.swing.JTable();
+        jPanel4 = new javax.swing.JPanel();
+        otro3 = new javax.swing.JScrollPane();
+        tblArtInves = new javax.swing.JTable();
+        jPanel5 = new javax.swing.JPanel();
+        otro4 = new javax.swing.JScrollPane();
+        tblVideo = new javax.swing.JTable();
+        jPanel6 = new javax.swing.JPanel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        tblLibros.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        otro.setViewportView(tblLibros);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(328, Short.MAX_VALUE)
+                .addComponent(otro, javax.swing.GroupLayout.PREFERRED_SIZE, 777, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(otro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Libros", jPanel1);
+
+        tblPeriodico.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        otro1.setViewportView(tblPeriodico);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(328, Short.MAX_VALUE)
+                .addComponent(otro1, javax.swing.GroupLayout.PREFERRED_SIZE, 777, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(otro1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Periódicos", jPanel2);
+
+        tblRevista.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        otro2.setViewportView(tblRevista);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(328, Short.MAX_VALUE)
+                .addComponent(otro2, javax.swing.GroupLayout.PREFERRED_SIZE, 777, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(otro2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(31, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Revistas", jPanel3);
+
+        tblArtInves.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        otro3.setViewportView(tblArtInves);
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap(328, Short.MAX_VALUE)
+                .addComponent(otro3, javax.swing.GroupLayout.PREFERRED_SIZE, 777, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(otro3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Artículos de investigación", jPanel4);
+
+        tblVideo.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        otro4.setViewportView(tblVideo);
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(328, Short.MAX_VALUE)
+                .addComponent(otro4, javax.swing.GroupLayout.PREFERRED_SIZE, 777, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(otro4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Videos científicos", jPanel5);
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1111, Short.MAX_VALUE)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 474, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Usuarios", jPanel6);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 535, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 360, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1)
         );
 
         pack();
@@ -45,5 +318,22 @@ public class Dashboard extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JScrollPane otro;
+    private javax.swing.JScrollPane otro1;
+    private javax.swing.JScrollPane otro2;
+    private javax.swing.JScrollPane otro3;
+    private javax.swing.JScrollPane otro4;
+    private javax.swing.JTable tblArtInves;
+    private javax.swing.JTable tblLibros;
+    private javax.swing.JTable tblPeriodico;
+    private javax.swing.JTable tblRevista;
+    private javax.swing.JTable tblVideo;
     // End of variables declaration//GEN-END:variables
 }

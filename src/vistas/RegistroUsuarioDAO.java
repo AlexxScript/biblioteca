@@ -27,7 +27,7 @@ public class RegistroUsuarioDAO {
     public Login login(Usuario usuario){
         Login lg = new Login();
         try{
-            String qy = "SELECT direccion, telefono, nombreusuario, perfil FROM usuario WHERE nombreusuario = ? AND contrasenia = ?";
+            String qy = "SELECT direccion, telefono, nombreusuario, perfil,id_biblioteca FROM usuario WHERE nombreusuario = ? AND contrasenia = ?";
             con = Conexion.conectar();
             ps = con.prepareStatement(qy);
             ps.setString(1, usuario.getNomnreUsuario());
@@ -38,6 +38,7 @@ public class RegistroUsuarioDAO {
                 lg.setNomnreUsuario(rs.getString("nombreusuario"));
                 lg.setTelefono(rs.getString("telefono"));
                 lg.setPerfil(rs.getString("perfil"));
+                lg.setId_biblioteca(rs.getString("id_biblioteca"));
             }
         }catch(SQLException e){
             System.out.println(e);
@@ -89,8 +90,6 @@ public class RegistroUsuarioDAO {
             ps.setString(9, esPrimerUsuario ? "admin" : "visitante");
             ps.setInt(10,idBiblio);
             ps.executeUpdate();
-
-            //int idUsuario = obtenerIdUsuarioPorNombre(usuario.getNomnreUsuario());
 
             return esPrimerUsuario 
                 ? "Usuario registrado correctamente como administrador de la biblioteca." 

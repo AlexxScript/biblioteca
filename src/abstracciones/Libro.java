@@ -19,6 +19,10 @@ public class Libro extends Ejemplar{
     private String tipoLibro;
     private String libroid;
 
+    public Libro(String id, ArrayList<String> autores, String fechaLanz, String idioma, int cantidad, int ubicacion_id) {
+        super(id, autores, fechaLanz, idioma, cantidad, ubicacion_id);
+    }
+
     public Libro(String id, ArrayList<String> autores, String fechaLanz, String idioma, int cantidad, int ubicacion_id, String titulo, String editorial, String pasta, String volumen, ArrayList<Indice> indice, String tipoLibro, String libroid) {
         super(id, autores, fechaLanz, idioma, cantidad, ubicacion_id);
         this.titulo = titulo;

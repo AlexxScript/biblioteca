@@ -346,6 +346,7 @@ public class RegistrarLogin extends javax.swing.JFrame {
         if(lg.getNomnreUsuario() != null){
             Dashboard ds = new Dashboard(lg);
             ds.setVisible(true);
+            dispose();
         } else{
             System.out.println("datos incorrectos");
         }
