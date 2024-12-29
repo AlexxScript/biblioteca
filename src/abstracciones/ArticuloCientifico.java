@@ -16,14 +16,24 @@ public class ArticuloCientifico extends Ejemplar{
     private String insitutoProvinencia;
     private String articulocientifico_id;
 
-    public ArticuloCientifico(String id, ArrayList<String> autores, String fechaLanz, String idioma, int cantidad, int ubicacion_id,String areaespecialidad, String fechaescr, String insitutoProvinencia, String articulocientifico_id) {
-        super(id, autores, fechaLanz, idioma, cantidad, ubicacion_id);
+    public ArticuloCientifico(String areaespecialidad, String fechaescr, String insitutoProvinencia, String articulocientifico_id) {
         this.areaespecialidad = areaespecialidad;
         this.fechaescr = fechaescr;
         this.insitutoProvinencia = insitutoProvinencia;
         this.articulocientifico_id = articulocientifico_id;
     }
 
+    public ArticuloCientifico(String areaespecialidad, String fechaescr, String insitutoProvinencia, String articulocientifico_id, String id, String autores, String fechaLanz, String idioma, int cantidad, int cantidadReal, int ubicacion_id, int biblioteca_id) {
+        super(id, autores, fechaLanz, idioma, cantidad, cantidadReal, ubicacion_id, biblioteca_id);
+        this.areaespecialidad = areaespecialidad;
+        this.fechaescr = fechaescr;
+        this.insitutoProvinencia = insitutoProvinencia;
+        this.articulocientifico_id = articulocientifico_id;
+    }
+
+    public ArticuloCientifico() {
+    }
+    
     public String getAreaespecialidad() {
         return areaespecialidad;
     }

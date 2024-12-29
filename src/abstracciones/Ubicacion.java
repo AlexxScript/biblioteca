@@ -23,6 +23,8 @@ public class Ubicacion {
         this.seccion = seccion;
     }
 
+    public Ubicacion() {}
+
     public static class UbicacionBuilder implements IBuilder<Ubicacion>{
         private String id;
         private String pasillo;

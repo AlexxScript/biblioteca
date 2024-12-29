@@ -15,23 +15,21 @@ public class Libro extends Ejemplar{
     private String editorial;
     private String pasta;
     private String volumen;
-    private ArrayList<Indice> indice;
     private String tipoLibro;
     private String libroid;
 
-    public Libro(String id, ArrayList<String> autores, String fechaLanz, String idioma, int cantidad, int ubicacion_id) {
-        super(id, autores, fechaLanz, idioma, cantidad, ubicacion_id);
-    }
-
-    public Libro(String id, ArrayList<String> autores, String fechaLanz, String idioma, int cantidad, int ubicacion_id, String titulo, String editorial, String pasta, String volumen, ArrayList<Indice> indice, String tipoLibro, String libroid) {
-        super(id, autores, fechaLanz, idioma, cantidad, ubicacion_id);
+    public Libro(String titulo, String editorial, String pasta, String volumen, String tipoLibro, String libroid, String id, String autores, String fechaLanz, String idioma, int cantidad, int cantidadReal, int ubicacion_id, int biblioteca_id) {
+        super(id, autores, fechaLanz, idioma, cantidad, cantidadReal, ubicacion_id, biblioteca_id);
         this.titulo = titulo;
         this.editorial = editorial;
         this.pasta = pasta;
         this.volumen = volumen;
-        this.indice = indice;
         this.tipoLibro = tipoLibro;
         this.libroid = libroid;
+    }
+
+    public Libro() {
+        
     }
     
     public String getTitulo() {
@@ -64,14 +62,6 @@ public class Libro extends Ejemplar{
 
     public void setVolumen(String volumen) {
         this.volumen = volumen;
-    }
-
-    public ArrayList<Indice> getIndice() {
-        return indice;
-    }
-
-    public void setIndice(ArrayList<Indice> indice) {
-        this.indice = indice;
     }
 
     public String getTipoLibro() {

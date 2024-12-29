@@ -18,8 +18,14 @@ public class Revista extends Ejemplar {
     private String tema;
     private String pagina;
 
-    public Revista(String nombre, String distribuidor, String empresa, String tipoRevista, String tema, String pagina, String id, ArrayList<String> autores, String fechaLanz, String idioma, int cantidad, int ubicacion_id) {
-        super(id, autores, fechaLanz, idioma, cantidad, ubicacion_id);
+    public Revista(String id, String autores, String fechaLanz, String idioma, int cantidad, int cantidadReal, int ubicacion_id, int biblioteca_id) {
+        super(id, autores, fechaLanz, idioma, cantidad, cantidadReal, ubicacion_id, biblioteca_id);
+    }
+
+    public Revista() {
+    }
+
+    public Revista(String nombre, String distribuidor, String empresa, String tipoRevista, String tema, String pagina) {
         this.nombre = nombre;
         this.distribuidor = distribuidor;
         this.empresa = empresa;
@@ -27,6 +33,7 @@ public class Revista extends Ejemplar {
         this.tema = tema;
         this.pagina = pagina;
     }
+
 
     public String getNombre() {
         return nombre;

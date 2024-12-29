@@ -12,19 +12,26 @@ import java.util.ArrayList;
  */
 public class Ejemplar {
     private String id;
-    private ArrayList<String> autores;
+    private String autores;
     private String fechaLanz;
     private String idioma;
     private int cantidad;
+    private int cantidadReal;
     private int ubicacion_id;
+    private int biblioteca_id;
 
-    public Ejemplar(String id, ArrayList<String> autores, String fechaLanz, String idioma, int cantidad, int ubicacion_id) {
+    public Ejemplar() {
+    }
+
+    public Ejemplar(String id, String autores, String fechaLanz, String idioma, int cantidad, int cantidadReal, int ubicacion_id, int biblioteca_id) {
         this.id = id;
         this.autores = autores;
         this.fechaLanz = fechaLanz;
         this.idioma = idioma;
         this.cantidad = cantidad;
         this.ubicacion_id = ubicacion_id;
+        this.biblioteca_id = biblioteca_id;
+        this.cantidadReal = cantidadReal;
     }
 
     public String getId() {
@@ -35,11 +42,11 @@ public class Ejemplar {
         this.id = id;
     }
 
-    public ArrayList<String> getAutores() {
+    public String getAutores() {
         return autores;
     }
 
-    public void setAutores(ArrayList<String> autores) {
+    public void setAutores(String autores) {
         this.autores = autores;
     }
 
@@ -74,4 +81,21 @@ public class Ejemplar {
     public void setUbicacion_id(int ubicacion_id) {
         this.ubicacion_id = ubicacion_id;
     }
+
+    public int getBiblioteca_id() {
+        return biblioteca_id;
+    }
+
+    public void setBiblioteca_id(int biblioteca_id) {
+        this.biblioteca_id = biblioteca_id;
+    }
+    
+    public int getCantidadReal() {
+        return cantidadReal;
+    }
+
+    public void setCantidadReal(int cantidadReal) {
+        this.cantidadReal = cantidadReal;
+    }
+    
 }

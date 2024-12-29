@@ -18,13 +18,24 @@ public class Periodico extends Ejemplar {
     private String empresa;
     private String tiporevista;
 
-    public Periodico(ArrayList<Articulo> articulos, String nombre, String distribuidor, String empresa, String tiporevista, String id, ArrayList<String> autores, String fechaLanz, String idioma, int cantidad, int ubicacion_id) {
-        super(id, autores, fechaLanz, idioma, cantidad, ubicacion_id);
+    public Periodico(ArrayList<Articulo> articulos, String nombre, String distribuidor, String empresa, String tiporevista) {
         this.articulos = articulos;
         this.nombre = nombre;
         this.distribuidor = distribuidor;
         this.empresa = empresa;
         this.tiporevista = tiporevista;
+    }
+
+    public Periodico(ArrayList<Articulo> articulos, String nombre, String distribuidor, String empresa, String tiporevista, String id, String autores, String fechaLanz, String idioma, int cantidad, int cantidadReal, int ubicacion_id, int biblioteca_id) {
+        super(id, autores, fechaLanz, idioma, cantidad, cantidadReal, ubicacion_id, biblioteca_id);
+        this.articulos = articulos;
+        this.nombre = nombre;
+        this.distribuidor = distribuidor;
+        this.empresa = empresa;
+        this.tiporevista = tiporevista;
+    }
+
+    public Periodico() {
     }
 
     public ArrayList<Articulo> getArticulos() {

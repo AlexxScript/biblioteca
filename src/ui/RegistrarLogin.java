@@ -7,8 +7,8 @@ package ui;
 import abstracciones.Biblioteca;
 import abstracciones.Usuario;
 import abstracciones.Login;
-import vistas.RegistroUsuarioDAO;
-import vistas.BibliotecaDAO;
+import controller.RegistroUsuarioDAO;
+import controller.BibliotecaDAO;
 /**
  *
  * @author alejandro ameneyro
