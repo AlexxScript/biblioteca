@@ -7,6 +7,8 @@ package controller;
 import abstracciones.Libro;
 import abstracciones.Ubicacion;
 
+import interfaces.ControllerDao;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,19 +21,15 @@ import utils.Conexion;
  *
  * @author alejandro ameneyro
  */
-public class LibroDAO {
+public class LibroDAO implements ControllerDao<Libro>{
     
     Connection con;
     PreparedStatement ps;
-    ResultSet rs;
-    DefaultTableModel modeloLibro;
-    JTable tblLibros;
-    JTable tblLibros1;
 
     public LibroDAO() {
     }
     
-    public void cargarDatosTablaLibro(DefaultTableModel modeloLibro,JTable tblLibros, JTable tblLibros1) {
+    public void cargarDatos(DefaultTableModel modeloLibro,JTable tblLibros, JTable tblLibros1) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -88,7 +86,7 @@ public class LibroDAO {
         }
     }
 
-    public Object[] registrarLibro(Ubicacion ubi, Libro lib, String idBiblioteca) {
+    public Object[] registrarProducto(Ubicacion ubi, Libro lib, String idBiblioteca) {
         if (ubi.getAnaquel().equals("") || ubi.getPasillo().equals("") || ubi.getRepisa().equals("") ||
             ubi.getSeccion().equals("") || lib.getAutores().equals("") || lib.getCantidad() <= 0 ||
             lib.getEditorial().equals("") || lib.getFechaLanz().equals("") || lib.getIdioma().equals("") ||
@@ -131,7 +129,7 @@ public class LibroDAO {
             }
 
             String sqlLibro = "INSERT INTO libro (titulo, editorial, pasta, volumen, tipoLibro, libro_id) VALUES (?, ?, ?, ?, ?, ?)";
-            ps = con.prepareStatement(sqlLibro);
+            ps = con.prepareStatement(sqlLibro,ps.RETURN_GENERATED_KEYS);
             ps.setString(1, lib.getTitulo());
             ps.setString(2, lib.getEditorial());
             ps.setString(3, lib.getPasta());
@@ -159,7 +157,7 @@ public class LibroDAO {
         }
     } 
     
-    public boolean actualizarLibro(Ubicacion ubi, Libro lib, String idBiblioteca, JTable tblLibros, JTable tblLibros1) {
+    public boolean actualizarProducto(Ubicacion ubi, Libro lib, String idBiblioteca, JTable tblLibros, JTable tblLibros1) {
         if (ubi.getAnaquel().equals("") || ubi.getPasillo().equals("") || ubi.getRepisa().equals("") ||
             ubi.getSeccion().equals("") || lib.getAutores().equals("") || lib.getCantidad() <= 0 ||
             lib.getEditorial().equals("") || lib.getFechaLanz().equals("") || lib.getIdioma().equals("") ||
@@ -207,7 +205,7 @@ public class LibroDAO {
             System.out.println(lib.getLibroid());
             // Recargar datos en las JTable
             DefaultTableModel modeloLibro = (DefaultTableModel) tblLibros.getModel();
-            cargarDatosTablaLibro(modeloLibro, tblLibros, tblLibros1);
+            cargarDatos(modeloLibro, tblLibros, tblLibros1);
 
             return true;
         } catch (SQLException e) {
@@ -216,7 +214,7 @@ public class LibroDAO {
         }
     }
 
-    public boolean eliminarLibro(String libroId, JTable tblLibros, JTable tblLibros1) {
+    public boolean eliminarProducto(String libroId, JTable tblLibros, JTable tblLibros1) {
         try {
             con = Conexion.conectar();
 
@@ -227,7 +225,7 @@ public class LibroDAO {
             System.out.println("Libro eliminado: " + libroId);
 
             DefaultTableModel modeloLibro = (DefaultTableModel) tblLibros.getModel();
-            cargarDatosTablaLibro(modeloLibro, tblLibros, tblLibros1);
+            cargarDatos(modeloLibro, tblLibros, tblLibros1);
 
             return true;
         } catch (SQLException e) {
@@ -235,7 +233,4 @@ public class LibroDAO {
             return false;
         }
     }
-
-
-    
 }

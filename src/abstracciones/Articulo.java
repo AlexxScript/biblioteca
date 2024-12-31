@@ -13,20 +13,17 @@ import java.util.ArrayList;
 public class Articulo {
     private String id;
     private String tituloArt;
-    private ArrayList<String> autoresArt;
+    private String autoresArt;
     private String fechaPublicacion;
-    private String tipoArticulo;
-    private String fotografo;
-    private String seccion;
 
-    public Articulo(String id, String tituloArt, ArrayList<String> autoresArt, String fechaPublicacion, String tipoArticulo, String fotografo, String seccion) {
+    public Articulo() {
+    }
+
+    public Articulo(String id, String tituloArt, String autoresArt, String fechaPublicacion) {
         this.id = id;
         this.tituloArt = tituloArt;
         this.autoresArt = autoresArt;
         this.fechaPublicacion = fechaPublicacion;
-        this.tipoArticulo = tipoArticulo;
-        this.fotografo = fotografo;
-        this.seccion = seccion;
     }
 
     public String getId() {
@@ -45,11 +42,11 @@ public class Articulo {
         this.tituloArt = tituloArt;
     }
 
-    public ArrayList<String> getAutoresArt() {
+    public String getAutoresArt() {
         return autoresArt;
     }
 
-    public void setAutoresArt(ArrayList<String> autoresArt) {
+    public void setAutoresArt(String autoresArt) {
         this.autoresArt = autoresArt;
     }
 
@@ -60,28 +57,6 @@ public class Articulo {
     public void setFechaPublicacion(String fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
     }
-
-    public String getTipoArticulo() {
-        return tipoArticulo;
-    }
-
-    public void setTipoArticulo(String tipoArticulo) {
-        this.tipoArticulo = tipoArticulo;
-    }
-
-    public String getFotografo() {
-        return fotografo;
-    }
-
-    public void setFotografo(String fotografo) {
-        this.fotografo = fotografo;
-    }
-
-    public String getSeccion() {
-        return seccion;
-    }
-
-    public void setSeccion(String seccion) {
-        this.seccion = seccion;
-    }
+    
+    
 }

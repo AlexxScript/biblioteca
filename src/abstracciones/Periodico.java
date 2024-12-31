@@ -17,6 +17,16 @@ public class Periodico extends Ejemplar {
     private String distribuidor;
     private String empresa;
     private String tiporevista;
+    private String idPerio;
+
+    public Periodico(ArrayList<Articulo> articulos, String nombre, String distribuidor, String empresa, String tiporevista, String idPerio) {
+        this.articulos = articulos;
+        this.nombre = nombre;
+        this.distribuidor = distribuidor;
+        this.empresa = empresa;
+        this.tiporevista = tiporevista;
+        this.idPerio = idPerio;
+    }
 
     public Periodico(ArrayList<Articulo> articulos, String nombre, String distribuidor, String empresa, String tiporevista) {
         this.articulos = articulos;
@@ -38,6 +48,14 @@ public class Periodico extends Ejemplar {
     public Periodico() {
     }
 
+    public String getIdPerio() {
+        return idPerio;
+    }
+
+    public void setIdPerio(String idPerio) {
+        this.idPerio = idPerio;
+    }
+    
     public ArrayList<Articulo> getArticulos() {
         return articulos;
     }
