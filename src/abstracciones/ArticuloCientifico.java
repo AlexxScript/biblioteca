@@ -11,24 +11,27 @@ import java.util.ArrayList;
  * @author alexamn
  */
 public class ArticuloCientifico extends Ejemplar{
+    private String nombreArt;
     private String areaespecialidad;
     private String fechaescr;
     private String insitutoProvinencia;
     private String articulocientifico_id;
 
-    public ArticuloCientifico(String areaespecialidad, String fechaescr, String insitutoProvinencia, String articulocientifico_id) {
+    public ArticuloCientifico(String nombreArt,String areaespecialidad, String fechaescr, String insitutoProvinencia, String articulocientifico_id) {
         this.areaespecialidad = areaespecialidad;
         this.fechaescr = fechaescr;
         this.insitutoProvinencia = insitutoProvinencia;
         this.articulocientifico_id = articulocientifico_id;
+        this.nombreArt = nombreArt;
     }
 
-    public ArticuloCientifico(String areaespecialidad, String fechaescr, String insitutoProvinencia, String articulocientifico_id, String id, String autores, String fechaLanz, String idioma, int cantidad, int cantidadReal, int ubicacion_id, int biblioteca_id) {
+    public ArticuloCientifico(String nombreArt, String areaespecialidad, String fechaescr, String insitutoProvinencia, String articulocientifico_id, String id, String autores, String fechaLanz, String idioma, int cantidad, int cantidadReal, int ubicacion_id, int biblioteca_id) {
         super(id, autores, fechaLanz, idioma, cantidad, cantidadReal, ubicacion_id, biblioteca_id);
         this.areaespecialidad = areaespecialidad;
         this.fechaescr = fechaescr;
         this.insitutoProvinencia = insitutoProvinencia;
         this.articulocientifico_id = articulocientifico_id;
+        this.nombreArt = nombreArt;
     }
 
     public ArticuloCientifico() {
@@ -64,5 +67,13 @@ public class ArticuloCientifico extends Ejemplar{
 
     public void setArticulocientifico_id(String articulocientifico_id) {
         this.articulocientifico_id = articulocientifico_id;
+    }
+    
+    public String getNombreArt() {
+        return nombreArt;
+    }
+
+    public void setNombreArt(String nombreArt) {
+        this.nombreArt = nombreArt;
     }
 }

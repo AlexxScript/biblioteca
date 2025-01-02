@@ -21,7 +21,7 @@ import utils.Conexion;
  *
  * @author alejandro ameneyro
  */
-public class LibroDAO implements ControllerDao<Libro>{
+public class LibroDAO {
     
     Connection con;
     PreparedStatement ps;
@@ -29,7 +29,7 @@ public class LibroDAO implements ControllerDao<Libro>{
     public LibroDAO() {
     }
     
-    public void cargarDatos(DefaultTableModel modeloLibro,JTable tblLibros, JTable tblLibros1) {
+    public void cargarDatos(DefaultTableModel modeloLibro,JTable tblLibros, JTable tblLibros1, String idBiblioteca) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -41,9 +41,10 @@ public class LibroDAO implements ControllerDao<Libro>{
                            "e.cantidad, e.cantidadreal, u.id AS idU, u.pasillo, u.repisa, u.anaquel, u.seccion " +
                            "FROM libro l " +
                            "JOIN ejemplar e ON l.libro_id = e.id " +
-                           "JOIN ubicacion u ON e.ubicacion_id = u.id";
+                           "JOIN ubicacion u ON e.ubicacion_id = u.id WHERE e.id_biblioteca = ?";
 
             ps = con.prepareStatement(query);
+            ps.setString(1, idBiblioteca);
             rs = ps.executeQuery();
             modeloLibro.setRowCount(0);
 
@@ -205,7 +206,7 @@ public class LibroDAO implements ControllerDao<Libro>{
             System.out.println(lib.getLibroid());
             // Recargar datos en las JTable
             DefaultTableModel modeloLibro = (DefaultTableModel) tblLibros.getModel();
-            cargarDatos(modeloLibro, tblLibros, tblLibros1);
+            cargarDatos(modeloLibro, tblLibros, tblLibros1, idBiblioteca);
 
             return true;
         } catch (SQLException e) {
@@ -214,7 +215,7 @@ public class LibroDAO implements ControllerDao<Libro>{
         }
     }
 
-    public boolean eliminarProducto(String libroId, JTable tblLibros, JTable tblLibros1) {
+    public boolean eliminarProducto(String libroId, JTable tblLibros, JTable tblLibros1, String idBiblioteca) {
         try {
             con = Conexion.conectar();
 
@@ -225,7 +226,7 @@ public class LibroDAO implements ControllerDao<Libro>{
             System.out.println("Libro eliminado: " + libroId);
 
             DefaultTableModel modeloLibro = (DefaultTableModel) tblLibros.getModel();
-            cargarDatos(modeloLibro, tblLibros, tblLibros1);
+            cargarDatos(modeloLibro, tblLibros, tblLibros1,idBiblioteca);
 
             return true;
         } catch (SQLException e) {

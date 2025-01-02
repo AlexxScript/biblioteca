@@ -15,8 +15,15 @@ public class Revista extends Ejemplar {
     private String distribuidor;
     private String empresa;
     private String tipoRevista;
-    private String tema;
-    private String pagina;
+    private String idRevista;
+
+    public Revista(String nombre, String distribuidor, String empresa, String tipoRevista, String idRevista) {
+        this.nombre = nombre;
+        this.distribuidor = distribuidor;
+        this.empresa = empresa;
+        this.tipoRevista = tipoRevista;
+        this.idRevista = idRevista;
+    }
 
     public Revista(String id, String autores, String fechaLanz, String idioma, int cantidad, int cantidadReal, int ubicacion_id, int biblioteca_id) {
         super(id, autores, fechaLanz, idioma, cantidad, cantidadReal, ubicacion_id, biblioteca_id);
@@ -25,15 +32,13 @@ public class Revista extends Ejemplar {
     public Revista() {
     }
 
-    public Revista(String nombre, String distribuidor, String empresa, String tipoRevista, String tema, String pagina) {
-        this.nombre = nombre;
-        this.distribuidor = distribuidor;
-        this.empresa = empresa;
-        this.tipoRevista = tipoRevista;
-        this.tema = tema;
-        this.pagina = pagina;
+    public String getIdRevista() {
+        return idRevista;
     }
 
+    public void setIdRevista(String idRevista) {
+        this.idRevista = idRevista;
+    }
 
     public String getNombre() {
         return nombre;
@@ -65,21 +70,5 @@ public class Revista extends Ejemplar {
 
     public void setTipoRevista(String tipoRevista) {
         this.tipoRevista = tipoRevista;
-    }
-
-    public String getTema() {
-        return tema;
-    }
-
-    public void setTema(String tema) {
-        this.tema = tema;
-    }
-
-    public String getPagina() {
-        return pagina;
-    }
-
-    public void setPagina(String pagina) {
-        this.pagina = pagina;
     }
 }

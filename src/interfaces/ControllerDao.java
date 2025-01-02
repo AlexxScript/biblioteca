@@ -15,7 +15,7 @@ import javax.swing.table.DefaultTableModel;
  * @author alejandro ameneyro
  */
 public interface ControllerDao <T>{
-    Object[] registrarProducto(Ubicacion ubi, T producto, String idP);
-    boolean actualizarProducto(Ubicacion ubi, T producto, String idP, JTable tblProductos, JTable tblProductos1);
-    boolean eliminarProducto(String productoId, JTable tblProductos, JTable tblProductos1);
+    Object[] registrarProducto(Ubicacion ubi, T producto, String idP, String idBiblioteca);
+    boolean actualizarProducto(Ubicacion ubi, T producto, String idP, JTable tblProductos, JTable tblProductos1, String idBiblioteca);
+    boolean eliminarProducto(String productoId, JTable tblProductos, JTable tblProductos1, String idBiblioteca);
 }

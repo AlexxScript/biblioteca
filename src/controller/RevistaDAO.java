@@ -6,6 +6,7 @@ package controller;
 
 import abstracciones.Articulo;
 import abstracciones.Periodico;
+import abstracciones.Revista;
 import abstracciones.Ubicacion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,11 +21,11 @@ import utils.Conexion;
  *
  * @author alejandro ameneyro
  */
-public class PeriodicoDAO {
+public class RevistaDAO {
     Connection con;
     PreparedStatement ps;
     
-    public void cargarDatos(DefaultTableModel modeloPeriodico,JTable tblPeriodico, JTable tblLibros2, String idBiblioteca) {
+    public void cargarDatos(DefaultTableModel modeloRevista,JTable tblRevista, JTable tblLibros4, String idBiblioteca) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -34,14 +35,14 @@ public class PeriodicoDAO {
             String query = "SELECT p.id AS idT, p.nombre, p.distribuidor, p.empresa, p.tipoRevista, " +
                            "e.id AS idE, e.autores, e.fechaLanz AS fecha_lanzamiento, e.idioma, " +
                            "e.cantidad, e.cantidadreal, u.id AS idU, u.pasillo, u.repisa, u.anaquel, u.seccion " +
-                           "FROM periodico p " +
+                           "FROM revista p " +
                            "JOIN ejemplar e ON p.ejemplar_id = e.id " +
                            "JOIN ubicacion u ON e.ubicacion_id = u.id WHERE e.id_biblioteca = ?";
 
             ps = con.prepareStatement(query);
             ps.setString(1, idBiblioteca);
             rs = ps.executeQuery();
-            modeloPeriodico.setRowCount(0);
+            modeloRevista.setRowCount(0);
 
             while (rs.next()) {
                 Object[] fila = new Object[15];
@@ -61,11 +62,11 @@ public class PeriodicoDAO {
                 fila[13] = rs.getString("idT");
                 fila[14] = rs.getString("idU");
 
-                modeloPeriodico.addRow(fila);
+                modeloRevista.addRow(fila);
             }
 
-            tblPeriodico.setModel(modeloPeriodico);
-            tblLibros2.setModel(modeloPeriodico);
+            tblRevista.setModel(modeloRevista);
+            tblLibros4.setModel(modeloRevista);
         } catch (SQLException e) {
             System.err.println("Error al cargar los datos: " + e);
         } finally {
@@ -79,11 +80,11 @@ public class PeriodicoDAO {
         }
     }
 
-    public Object[] registrarProducto(Ubicacion ubi, Periodico peri, ArrayList<Articulo> articulos, String idBiblioteca) {
+    public Object[] registrarProducto(Ubicacion ubi, Revista peri, ArrayList<Articulo> articulos, String idBiblioteca) {
         if (ubi.getAnaquel().equals("") || ubi.getPasillo().equals("") || ubi.getRepisa().equals("") ||
             ubi.getSeccion().equals("") || peri.getAutores().equals("") || peri.getCantidad() <= 0 ||
             peri.getEmpresa().equals("") || peri.getFechaLanz().equals("") || peri.getIdioma().equals("") ||
-            peri.getDistribuidor().equals("") || peri.getTiporevista().equals("")) {
+            peri.getDistribuidor().equals("") || peri.getTipoRevista().equals("")) {
             return null;
         }
 
@@ -120,12 +121,12 @@ public class PeriodicoDAO {
                 ejemplarId = rsEjemplar.getInt(1);
             }
 
-            String sqlLibro = "INSERT INTO periodico (nombre, distribuidor, empresa, tipoRevista, ejemplar_id) VALUES (?, ?, ?, ?, ?)";
+            String sqlLibro = "INSERT INTO revista (nombre, distribuidor, empresa, tipoRevista, ejemplar_id) VALUES (?, ?, ?, ?, ?)";
             ps = con.prepareStatement(sqlLibro, ps.RETURN_GENERATED_KEYS);
             ps.setString(1, peri.getNombre());
             ps.setString(2, peri.getDistribuidor());
             ps.setString(3, peri.getEmpresa());
-            ps.setString(4, peri.getTiporevista());
+            ps.setString(4, peri.getTipoRevista());
             ps.setInt(5, ejemplarId);
             ps.executeUpdate();
             
@@ -135,7 +136,7 @@ public class PeriodicoDAO {
                 libroId = rsLibro.getInt(1);
             }
             
-            String sqlArt = "INSERT INTO articulo (tituloArt,autores,fechaPublicacion,id_periodico) VALUES (?, ?, ?, ?)";
+            String sqlArt = "INSERT INTO articulo (tituloArt,autores,fechaPublicacion,id_revista) VALUES (?, ?, ?, ?)";
             for(int i = 0; i<articulos.size(); i++){
                ps = con.prepareStatement(sqlArt,ps.RETURN_GENERATED_KEYS);
                ps.setString(1, articulos.get(i).getTituloArt());
@@ -146,7 +147,7 @@ public class PeriodicoDAO {
             }
 
             return new Object[] {
-                peri.getNombre(), peri.getDistribuidor(), peri.getEmpresa(), peri.getTiporevista(),
+                peri.getNombre(), peri.getDistribuidor(), peri.getEmpresa(), peri.getTipoRevista(),
                 peri.getFechaLanz(), peri.getIdioma(), peri.getCantidad(), peri.getCantidad(), // cantidad y cantidadTotal
                 ubi.getPasillo(), ubi.getRepisa(), ubi.getAnaquel(), ubi.getSeccion(),
                 ejemplarId, libroId, ubicacionId
@@ -157,11 +158,11 @@ public class PeriodicoDAO {
         }
     } 
     
-    public boolean actualizarProducto(Ubicacion ubi, Periodico peri, String idBiblioteca, JTable tblLibros, JTable tblLibros1) {
+    public boolean actualizarProducto(Ubicacion ubi, Revista peri, String idBiblioteca, JTable tblLibros, JTable tblLibros1) {
         if (ubi.getAnaquel().equals("") || ubi.getPasillo().equals("") || ubi.getRepisa().equals("") ||
             ubi.getSeccion().equals("") || peri.getAutores().equals("") || peri.getCantidad() <= 0 ||
             peri.getEmpresa().equals("") || peri.getFechaLanz().equals("") || peri.getIdioma().equals("") ||
-            peri.getDistribuidor().equals("") || peri.getTiporevista().equals("")) {
+            peri.getDistribuidor().equals("") || peri.getTipoRevista().equals("")) {
             return false;
         }
 
@@ -193,17 +194,17 @@ public class PeriodicoDAO {
 
             // Actualizar Libro
             
-            String sqlLibro = "UPDATE periodico SET nombre = ?, distribuidor = ?, empresa = ?, tipoRevista = ? WHERE id = ?";
+            String sqlLibro = "UPDATE revista SET nombre = ?, distribuidor = ?, empresa = ?, tipoRevista = ? WHERE id = ?";
             ps = con.prepareStatement(sqlLibro, ps.RETURN_GENERATED_KEYS);
             ps.setString(1, peri.getNombre());
             ps.setString(2, peri.getDistribuidor());
             ps.setString(3, peri.getEmpresa());
-            ps.setString(4, peri.getTiporevista());
-            ps.setString(5, peri.getIdPerio());
+            ps.setString(4, peri.getTipoRevista());
+            ps.setString(5, peri.getIdRevista());
             ps.executeUpdate();
             // Recargar datos en las JTable
-            DefaultTableModel modeloPeriodico = (DefaultTableModel) tblLibros.getModel();
-            cargarDatos(modeloPeriodico, tblLibros, tblLibros1, idBiblioteca);
+            DefaultTableModel modeloRevista = (DefaultTableModel) tblLibros.getModel();
+            cargarDatos(modeloRevista, tblLibros, tblLibros1, idBiblioteca);
 
             return true;
         } catch (SQLException e) {
@@ -216,14 +217,14 @@ public class PeriodicoDAO {
         try {
             con = Conexion.conectar();
 
-            String sqlLibro = "DELETE FROM periodico WHERE id = ?";
+            String sqlLibro = "DELETE FROM revista WHERE id = ?";
             ps = con.prepareStatement(sqlLibro);
             ps.setString(1, libroId);
             ps.executeUpdate();
-            System.out.println("Periodico eliminado: " + libroId);
+            System.out.println("Revista eliminada: " + libroId);
 
-            DefaultTableModel modeloPeriodico = (DefaultTableModel) tblLibros.getModel();
-            cargarDatos(modeloPeriodico, tblLibros, tblLibros1, idBiblioteca);
+            DefaultTableModel modeloRevista = (DefaultTableModel) tblLibros.getModel();
+            cargarDatos(modeloRevista, tblLibros, tblLibros1, idBiblioteca);
 
             return true;
         } catch (SQLException e) {
