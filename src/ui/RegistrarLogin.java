@@ -9,6 +9,8 @@ import abstracciones.Usuario;
 import abstracciones.Login;
 import controller.RegistroUsuarioDAO;
 import controller.BibliotecaDAO;
+import java.time.LocalDate;
+import java.util.Date;
 /**
  *
  * @author alejandro ameneyro
@@ -19,7 +21,10 @@ public class RegistrarLogin extends javax.swing.JFrame {
      * Creates new form RegistrarUsuario
      */
     public RegistrarLogin() {
+        LocalDate date = LocalDate.now();
         initComponents();
+        System.out.println(date);
+        System.out.println(date.plusDays(5));
     }
 
     /**
