@@ -24,37 +24,56 @@ public class PrestamoDAO {
     public PrestamoDAO (){
     }
     
-    public void registrarPrestamo(String idE, String idUs){
+    public String registrarPrestamo(String idE, String idUs){
         LocalDate date = LocalDate.now();
         try {
+            
             con = Conexion.conectar();
+            String sqlSele = "SELECT id,estado FROM usuario WHERE nombreusuario = ?";
+            String sqlActualizarInfraccion = "UPDATE usuario SET estado = 'noactivo' WHERE id = ?";
             String sqlS = "SELECT cantidadreal FROM ejemplar WHERE id = ?";
             String sqlPre = "INSERT INTO prestamos (usuario_id,ejemplar_id,fecha_prestamo,fecha_devolucion,estado) VALUES (?,?,?,?,?)"; 
             String sqlUp = "UPDATE ejemplar SET cantidadreal = cantidadreal - 1 WHERE id = ?";
-            ps = con.prepareStatement(sqlS);
-            ps.setString(1, idE);
+            
+            ps = con.prepareStatement(sqlSele);
+            ps.setString(1, idUs);
             rs = ps.executeQuery();
             
             if(rs.next()){
-                
-                if(rs.getInt("cantidadreal")>0){
-                   ps = con.prepareStatement(sqlPre);
-                   ps.setString(1,idUs);
-                   ps.setString(2, idE);
-                   ps.setDate(3,Date.valueOf(date));
-                   ps.setDate(4, Date.valueOf(date.plusDays(5)));
-                   ps.setString(5, "prestado");
-                   ps.executeUpdate();
-                   
-                   ps = con.prepareStatement(sqlUp);
-                   ps.setString(1, idE);
-                   ps.executeUpdate();
+                String idusu = rs.getString("id");
+                if(!rs.getString("estado").equals("noactivo")){
+                    ps = con.prepareStatement(sqlS);
+                    ps.setString(1, idE);
+                    rs = ps.executeQuery();
+                    if(rs.next()){             
+                        if(rs.getInt("cantidadreal")>0){
+                           ps = con.prepareStatement(sqlPre);
+                           ps.setString(1,idusu);
+                           ps.setString(2, idE);
+                           ps.setDate(3,Date.valueOf(date));
+                           ps.setDate(4, Date.valueOf(date.plusDays(5)));
+                           ps.setString(5, "prestado");
+                           ps.executeUpdate();
+
+                           ps = con.prepareStatement(sqlUp);
+                           ps.setString(1, idE);
+                           ps.executeUpdate();
+
+                           ps = con.prepareStatement(sqlActualizarInfraccion);
+                           ps.setString(1, idusu);
+                           ps.executeUpdate();
+                           return "Prestamo registrado";
+                        }
+                    }
+                } else{
+                   return "No puede pedir prestado aún";
                 }
-                
             }
-            
+            return "No se encontro un registro";
         } catch (Exception e) {
             System.out.println(e);
+            return e.getMessage();
+
         } finally {
             try {
                 if (rs != null) rs.close();
@@ -66,11 +85,12 @@ public class PrestamoDAO {
         }
     }
     
-    public void regresarPrestamo(String idE, String idPre){
+    public void regresarPrestamo(String idE, String idPre,String idUs){
         try {
             con = Conexion.conectar();
             String sqlS = "UPDATE prestamos SET estado = 'devuelto' WHERE id = ? ";
             String sqlUp = "UPDATE ejemplar SET cantidadreal = cantidadreal + 1 WHERE id = ?";
+            String sqlUs = "UPDATE usuario SET estado = 'activo WHERE id = ?";
             
             ps = con.prepareStatement(sqlS);
             ps.setString(1, idPre);
@@ -80,6 +100,10 @@ public class PrestamoDAO {
             ps.setString(1, idE);
             ps.executeUpdate();
             
+            ps = con.prepareStatement(sqlUs);
+            ps.setString(1, idUs);
+            ps.executeUpdate();
+            
         } catch (Exception e) {
             System.out.println(e);
         } finally {
@@ -93,14 +117,14 @@ public class PrestamoDAO {
         }
     }
     
-    public boolean verificarEstado(String idUs, String idPre) {
+    public String verificarEstado(String idUs) {
         LocalDate fechaActual = LocalDate.now();
 
         try {
             con = Conexion.conectar();
-            String sqlFechaDevolucion = "SELECT fecha_devolucion FROM prestamos WHERE id = ?";
+            String sqlFechaDevolucion = "SELECT fecha_devolucion FROM prestamos WHERE usuario_id = ?";
             ps = con.prepareStatement(sqlFechaDevolucion);
-            ps.setString(1, idPre);
+            ps.setString(1, idUs);
             rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -115,35 +139,37 @@ public class PrestamoDAO {
                     if (rs.next()) {
                         String estadoActual = rs.getString("estado");
 
-                        if (estadoActual.equals("activo")) {
+                        if (estadoActual.equals("activo") && 
+                           (fechaActual.isAfter(fechaDevolucion) || fechaActual.isEqual(fechaDevolucion))) {
                             String sqlActualizarInfraccion = "UPDATE usuario SET estado = 'noactivo', infracciones = infracciones + 1 WHERE id = ?";
                             ps = con.prepareStatement(sqlActualizarInfraccion);
                             ps.setString(1, idUs);
                             ps.executeUpdate();
-                            return false;
+                            return "Tu cuenta estará bloqueada hasta el día "+fechaDevolucion.plusDays(3);
                         }
 
                         if (estadoActual.equals("noactivo") && 
                             (fechaActual.isBefore(fechaDevolucion.plusDays(3)) || fechaActual.isEqual(fechaDevolucion.plusDays(3)))) {
-                            return false;
+                            return "Tu cuenta estará bloqueada hasta el día "+fechaDevolucion.plusDays(3);
+
                         }
 
                         String sqlReactivarUsuario = "UPDATE usuario SET estado = 'activo' WHERE id = ?";
                         ps = con.prepareStatement(sqlReactivarUsuario);
                         ps.setString(1, idUs);
                         ps.executeUpdate();
-                        return true;
+                        return "pasar";
                     }
                 } else {
-                    return true;
+                    return "pasar";
                 }
             }
 
-            return false;
+            return "pasar";
 
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return "pasar";
         } finally {
             try {
                 if (rs != null) rs.close();
@@ -164,7 +190,7 @@ public class PrestamoDAO {
             rs = ps.executeQuery();
             
             if(rs.next()){
-                if(rs.getInt("infracciones")>=5){
+                if(rs.getInt("infracciones")==5){
                     System.out.println("Cuanta inhabilitada");
                 }
             }

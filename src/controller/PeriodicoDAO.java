@@ -180,7 +180,7 @@ public class PeriodicoDAO {
             System.out.println(ubi.getId());
 
             // Actualizar Ejemplar
-            String sqlEjemplar = "UPDATE ejemplar SET autores = ?, fechaLanz = ?, idioma = ?, cantidad = ?, cantidadreal = ? WHERE id = ?";
+            String sqlEjemplar = "UPDATE ejemplar SET autores = ?, fechaLanz = ?, idioma = ?, cantidad = ?,cantidadreal = ? WHERE id = ?";
             ps = con.prepareStatement(sqlEjemplar);
             ps.setString(1, peri.getAutores());
             ps.setDate(2, java.sql.Date.valueOf(peri.getFechaLanz()));

@@ -27,13 +27,14 @@ public class RegistroUsuarioDAO {
     public Login login(Usuario usuario){
         Login lg = new Login();
         try{
-            String qy = "SELECT direccion, telefono, nombreusuario, perfil,id_biblioteca FROM usuario WHERE nombreusuario = ? AND contrasenia = ?";
+            String qy = "SELECT id,direccion, telefono, nombreusuario, perfil,id_biblioteca FROM usuario WHERE nombreusuario = ? AND contrasenia = ?";
             con = Conexion.conectar();
             ps = con.prepareStatement(qy);
             ps.setString(1, usuario.getNomnreUsuario());
             ps.setString(2, usuario.getContrasenia());
             rs = ps.executeQuery();
             if(rs.next()){
+                lg.setId_usuario(rs.getString("id"));
                 lg.setDireccion(rs.getString("direccion"));
                 lg.setNomnreUsuario(rs.getString("nombreusuario"));
                 lg.setTelefono(rs.getString("telefono"));

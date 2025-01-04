@@ -14,16 +14,18 @@ public class Login {
     private String nomnreUsuario;
     private String perfil;
     private String id_biblioteca;
+    private String id_usuario;
 
     public Login() {
     }
 
-    public Login(String direccion, String telefono, String nomnreUsuario, String perfil,String id_biblioteca) {
+    public Login(String direccion, String telefono, String nomnreUsuario, String perfil,String id_biblioteca,String id_usuario) {
         this.direccion = direccion;
         this.telefono = telefono;
         this.nomnreUsuario = nomnreUsuario;
         this.perfil = perfil;
         this.id_biblioteca = id_biblioteca;
+        this.id_usuario = id_usuario;
     }
 
     public String getDireccion() {
@@ -64,5 +66,13 @@ public class Login {
 
     public void setId_biblioteca(String id_biblioteca) {
         this.id_biblioteca = id_biblioteca;
+    }
+    
+    public String getId_usuario(){
+        return id_usuario;
+    }
+    
+    public void setId_usuario(String id_usuario){
+        this.id_usuario = id_usuario;
     }
 }

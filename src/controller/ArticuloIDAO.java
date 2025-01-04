@@ -171,6 +171,7 @@ public class ArticuloIDAO {
             ps.executeUpdate();
 
             // Actualizar ejemplar
+            //            //String sqlEjemplar = "UPDATE ejemplar SET autores = ?, fechaLanz = ?, idioma = ?, cantidad = ?, cantidadreal = ? WHERE id = ?";
             String sqlEjemplar = "UPDATE ejemplar SET autores = ?, fechaLanz = ?, idioma = ?, cantidad = ?, cantidadreal = ? WHERE id = ?";
             ps = con.prepareStatement(sqlEjemplar);
             ps.setString(1, art.getAutores());

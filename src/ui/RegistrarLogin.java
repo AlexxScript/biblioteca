@@ -9,6 +9,7 @@ import abstracciones.Usuario;
 import abstracciones.Login;
 import controller.RegistroUsuarioDAO;
 import controller.BibliotecaDAO;
+import controller.PrestamoDAO;
 import java.time.LocalDate;
 import java.util.Date;
 /**
@@ -343,15 +344,21 @@ public class RegistrarLogin extends javax.swing.JFrame {
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         // TODO add your handling code here:
         Usuario usu = new Usuario();
+        PrestamoDAO pres = new PrestamoDAO();
         Login lg = new Login();
         RegistroUsuarioDAO lgo = new RegistroUsuarioDAO();
         usu.setNomnreUsuario(txtUsuario.getText());
         usu.setContrasenia(String.valueOf(txtpassword.getPassword()));
         lg = lgo.login(usu);
         if(lg.getNomnreUsuario() != null){
-            Dashboard ds = new Dashboard(lg);
-            ds.setVisible(true);
-            dispose();
+            String res = pres.verificarEstado(lg.getId_usuario());
+            if(res.equals("pasar")){
+                Dashboard ds = new Dashboard(lg);
+                ds.setVisible(true);
+                dispose();
+            } else{
+                System.out.println(res);
+            }
         } else{
             System.out.println("datos incorrectos");
         }
