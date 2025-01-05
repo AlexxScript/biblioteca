@@ -11,14 +11,14 @@ import java.util.ArrayList;
  * @author alexamn
  */
 public class Ejemplar {
-    private String id;
-    private String autores;
-    private String fechaLanz;
-    private String idioma;
-    private int cantidad;
-    private int cantidadReal;
-    private int ubicacion_id;
-    private int biblioteca_id;
+    protected String id;
+    protected String autores;
+    protected String fechaLanz;
+    protected String idioma;
+    protected int cantidad;
+    protected int cantidadReal;
+    protected int ubicacion_id;
+    protected int biblioteca_id;
 
     public Ejemplar() {
     }

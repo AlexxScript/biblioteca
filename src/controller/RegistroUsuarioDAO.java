@@ -14,6 +14,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -122,4 +124,97 @@ public class RegistroUsuarioDAO {
             System.err.println("Error al cerrar conexión: " + e);
         }
     }
+    
+    public void listarUsuarios(String idBiblioteca, DefaultTableModel modelo, JTable jtableUs){
+        try {
+            con = Conexion.conectar();
+            String sqlUp = "SELECT id, nombre, perfil, apellidop, apellidom, direccion, telefono, nombreusuario FROM usuario WHERE id_biblioteca = ?";
+            ps = con.prepareStatement(sqlUp);
+            ps.setString(1, idBiblioteca);
+            rs = ps.executeQuery();
+            while(rs.next()){
+                Object[] fila = new Object[8];
+                fila[0] = rs.getString("id");
+                fila[1] = rs.getString("nombreusuario");
+                fila[2] = rs.getString("nombre");
+                fila[3] = rs.getString("apellidop");
+                fila[4] = rs.getString("apellidom");
+                fila[5] = rs.getString("perfil");
+                fila[6] = rs.getString("direccion");
+                fila[7] = rs.getString("telefono");
+                modelo.addRow(fila);
+            }
+            jtableUs.setModel(modelo);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public boolean actualizarUs(String idUsu, Usuario usuario, JTable jtableUs) {
+        try {
+            con = Conexion.conectar();
+            String sqlUp = "UPDATE usuario SET nombre = ?, perfil = ?, apellidop = ?, apellidom = ?, direccion = ?, telefono = ?, nombreusuario = ? WHERE id = ?";
+            ps = con.prepareStatement(sqlUp);
+            ps.setString(1, usuario.getNombre());
+            ps.setString(2, usuario.getPerfil());
+            ps.setString(3, usuario.getApellidop());
+            ps.setString(4, usuario.getApellidom());
+            ps.setString(5, usuario.getDireccion());
+            ps.setString(6, usuario.getTelefono());
+            ps.setString(7, usuario.getNomnreUsuario());
+            ps.setString(8, usuario.getId());
+            ps.executeUpdate();
+
+            // Buscar la fila correspondiente en la tabla
+            DefaultTableModel modelo = (DefaultTableModel) jtableUs.getModel();
+            for (int i = 0; i < modelo.getRowCount(); i++) {
+                if (modelo.getValueAt(i, 0).toString().equals(usuario.getId())) {
+                    modelo.setValueAt(usuario.getId(), i, 0);
+                    modelo.setValueAt(usuario.getNomnreUsuario(), i, 1);
+                    modelo.setValueAt(usuario.getNombre(), i, 2);
+                    modelo.setValueAt(usuario.getApellidop(), i, 3);
+                    modelo.setValueAt(usuario.getApellidom(), i, 4);
+                    modelo.setValueAt(usuario.getPerfil(), i, 5);
+                    modelo.setValueAt(usuario.getDireccion(), i, 6);
+                    modelo.setValueAt(usuario.getTelefono(), i, 7);
+                    break;
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
+    }
+
+    public boolean eliminarUsu(String idUsu, JTable jtableUs) {
+        try {
+            con = Conexion.conectar();
+            String sqlUp = "DELETE FROM usuario WHERE id = ?";
+            ps = con.prepareStatement(sqlUp);
+            ps.setString(1, idUsu);
+            ps.executeUpdate();
+
+            // Buscar y eliminar la fila correspondiente en la tabla
+            DefaultTableModel modelo = (DefaultTableModel) jtableUs.getModel();
+            for (int i = 0; i < modelo.getRowCount(); i++) {
+                if (modelo.getValueAt(i, 0).toString().equals(idUsu)) {
+                    modelo.removeRow(i);
+                    break;
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
+        } finally {
+            try {
+                if (ps != null) ps.close();
+                if (con != null) con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
 }

@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.sql.Date;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import utils.Conexion;
 
 /**
@@ -24,6 +26,57 @@ public class PrestamoDAO {
     public PrestamoDAO (){
     }
     
+    public void listarPrestamos(String idBiblio,DefaultTableModel modelo){
+        try {
+            String query = "SELECT " +
+                   "usuario.nombreusuario AS nombreusuario, " +
+                   "prestamos.fecha_prestamo AS fechaPrestamo, " +
+                   "prestamos.fecha_devolucion AS fechaEntrega, " +
+                   "prestamos.estado AS estadoEntrega, " +
+                   "usuario.estado AS EstadoUsuario, " +
+                   "prestamos.id AS idP, " +
+                   "ejemplar.id AS idE, " +
+                   "usuario.id AS idUs " +
+                   "FROM prestamos " +
+                   "JOIN usuario ON prestamos.usuario_id = usuario.id " +
+                   "JOIN ejemplar ON prestamos.ejemplar_id = ejemplar.id " +
+                   "WHERE prestamos.estado = 'prestado' AND ejemplar.id_biblioteca = ?";
+            con = Conexion.conectar();
+            
+            ps = con.prepareStatement(query);
+            ps.setString(1, idBiblio);
+            rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                Object[] fila = new Object[8];
+                fila[0] = rs.getString("nombreusuario");
+                fila[1] = rs.getDate("fechaPrestamo");
+                fila[2] = rs.getDate("fechaEntrega");
+                fila[3] = rs.getString("estadoEntrega");
+                fila[4] = rs.getString("EstadoUsuario");
+                fila[5] = rs.getInt("idP");
+                fila[6] = rs.getInt("idE");
+                fila[7] = rs.getInt("idUs");
+                modelo.addRow(fila);
+            }
+            rs.close();
+            ps.close();
+            con.close();
+           
+        } catch (Exception e) {
+            System.out.println(e);
+
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (con != null) con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+    
     public String registrarPrestamo(String idE, String idUs){
         LocalDate date = LocalDate.now();
         try {
@@ -34,6 +87,7 @@ public class PrestamoDAO {
             String sqlS = "SELECT cantidadreal FROM ejemplar WHERE id = ?";
             String sqlPre = "INSERT INTO prestamos (usuario_id,ejemplar_id,fecha_prestamo,fecha_devolucion,estado) VALUES (?,?,?,?,?)"; 
             String sqlUp = "UPDATE ejemplar SET cantidadreal = cantidadreal - 1 WHERE id = ?";
+            
             
             ps = con.prepareStatement(sqlSele);
             ps.setString(1, idUs);
@@ -85,25 +139,37 @@ public class PrestamoDAO {
         }
     }
     
-    public void regresarPrestamo(String idE, String idPre,String idUs){
+    public void regresarPrestamo(String idE, String idPre, String idUs, JTable jTable) {
         try {
             con = Conexion.conectar();
-            String sqlS = "UPDATE prestamos SET estado = 'devuelto' WHERE id = ? ";
-            String sqlUp = "UPDATE ejemplar SET cantidadreal = cantidadreal + 1 WHERE id = ?";
-            String sqlUs = "UPDATE usuario SET estado = 'activo WHERE id = ?";
-            
+
+            // Actualizar estado del préstamo
+            String sqlS = "UPDATE prestamos SET estado = 'devuelto' WHERE id = ?";
             ps = con.prepareStatement(sqlS);
             ps.setString(1, idPre);
             ps.executeUpdate();
-            
+
+            // Incrementar cantidad real del ejemplar
+            String sqlUp = "UPDATE ejemplar SET cantidadreal = cantidadreal + 1 WHERE id = ?";
             ps = con.prepareStatement(sqlUp);
             ps.setString(1, idE);
             ps.executeUpdate();
-            
+
+            // Cambiar estado del usuario a 'activo'
+            String sqlUs = "UPDATE usuario SET estado = 'activo' WHERE id = ?";
             ps = con.prepareStatement(sqlUs);
             ps.setString(1, idUs);
             ps.executeUpdate();
-            
+
+            // Actualizar el modelo del JTable
+            DefaultTableModel modelo = (DefaultTableModel) jTable.getModel();
+            for (int i = 0; i < modelo.getRowCount(); i++) {
+                if (modelo.getValueAt(i, 5).toString().equals(idPre)) { // Suponiendo que columna 5 es 'idPre'
+                    modelo.setValueAt("devuelto", i, 3); // Actualizar estadoEntrega
+                    break;
+                }
+            }
+
         } catch (Exception e) {
             System.out.println(e);
         } finally {
@@ -116,6 +182,7 @@ public class PrestamoDAO {
             }
         }
     }
+
     
     public String verificarEstado(String idUs) {
         LocalDate fechaActual = LocalDate.now();
