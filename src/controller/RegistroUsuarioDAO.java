@@ -56,11 +56,8 @@ public class RegistroUsuarioDAO {
             if(usuario.getApellidom().equals("") || usuario.getApellidop().equals("") || usuario.getContrasenia().equals("") || usuario.getDireccion().equals("") || usuario.getNomnreUsuario().equals("")){
                 return "No se aceptan datos vacios";
             }
-            ps = con.prepareStatement("SELECT COUNT(*) FROM usuario WHERE nombre = ? or nombreusuario = ?");
-            ps.setString(1,usuario.getNombre());
-            ps.setString(2,usuario.getNomnreUsuario());
-            System.out.println(usuario.getNombre());
-            System.out.println(usuario.getNomnreUsuario());
+            ps = con.prepareStatement("SELECT COUNT(*) FROM usuario WHERE nombreusuario = ?");
+            ps.setString(1,usuario.getNomnreUsuario());
             rs = ps.executeQuery();
             if (rs.next() && rs.getInt(1) > 0) {
                 return "Ya existe un registro con los mismos datos.";

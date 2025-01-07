@@ -238,7 +238,15 @@ public class PrestamoDAO {
                         if (estadoActual.equals("noactivo") && 
                             (fechaActual.isBefore(fechaDevolucion.plusDays(3)) || fechaActual.isEqual(fechaDevolucion.plusDays(3)))) {
                             return "Tu cuenta estará bloqueada hasta el día "+fechaDevolucion.plusDays(3);
+                        }
+                        
+                        String sqlUsb = "SELECT infracciones FROM usuario WHERE id = ?";
+                        ps = con.prepareStatement(sqlUsb);
+                        ps.setString(1, idUs);
+                        rs = ps.executeQuery();
 
+                        if (rs.next() && rs.getInt("infracciones") >= 5) {
+                            return "Cuenta bloqueada";
                         }
 
                         String sqlReactivarUsuario = "UPDATE usuario SET estado = 'activo' WHERE id = ?";
@@ -248,6 +256,14 @@ public class PrestamoDAO {
                         return "pasar";
                     }
                 } else {
+                    String sqlUsb = "SELECT infracciones FROM usuario WHERE id = ?";
+                    ps = con.prepareStatement(sqlUsb);
+                    ps.setString(1, idUs);
+                    rs = ps.executeQuery();
+
+                    if (rs.next() && rs.getInt("infracciones") >= 5) {
+                        return "Cuenta bloqueada";
+                    }
                     return "pasar";
                 }
             }
@@ -271,8 +287,8 @@ public class PrestamoDAO {
     public void bloquear(String idUs){
         try {
             con = Conexion.conectar();
-            String sqlUs = "SELECT infracciones FROM usuario WHERE id = ?";
-            ps = con.prepareStatement(sqlUs);
+            String sqlUsb = "SELECT infracciones FROM usuario WHERE id = ?";
+            ps = con.prepareStatement(sqlUsb);
             ps.setString(1, idUs);
             rs = ps.executeQuery();
             
