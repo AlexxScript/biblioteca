@@ -3006,14 +3006,26 @@ public class Dashboard extends javax.swing.JFrame {
     private void btnPrestamoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrestamoActionPerformed
         // TODO add your handling code here:
         PrestamoDAO pr = new PrestamoDAO();
-        String res = pr.registrarPrestamo(txtEPr.getText(), txtPre.getText());
-        System.out.println(res);
+        LibroDAO lb = new LibroDAO();
+        Object[] nuevaFila = pr.registrarPrestamo(txtEPr.getText(), txtPre.getText());
+        if (nuevaFila != null) {
+            lb.actualizarCantidadReal(tblLibros, txtEPr.getText(), (int) nuevaFila[8]);
+            lb.actualizarCantidadReal(tblLibros1, txtEPr.getText(), (int) nuevaFila[8]);
+            modeloPrestamo.addRow(nuevaFila);
+        }
     }//GEN-LAST:event_btnPrestamoActionPerformed
 
     private void btnPrestamo1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrestamo1ActionPerformed
         // TODO add your handling code here:
+        
         PrestamoDAO pr = new PrestamoDAO();
-        pr.registrarPrestamo(txtEPr1.getText(), txtPre1.getText());
+        PeriodicoDAO lb = new PeriodicoDAO();
+        Object[] nuevaFila = pr.registrarPrestamo(txtEPr1.getText(), txtPre1.getText());
+        if (nuevaFila != null) {
+            lb.actualizarCantidadReal(tblPeriodico, txtEPr1.getText(), (int) nuevaFila[8]);
+            lb.actualizarCantidadReal(tblLibros2, txtEPr1.getText(), (int) nuevaFila[8]);
+            modeloPrestamo.addRow(nuevaFila);
+        }
     }//GEN-LAST:event_btnPrestamo1ActionPerformed
 
     private void tblPeriodicoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPeriodicoMouseClicked
@@ -3027,7 +3039,13 @@ public class Dashboard extends javax.swing.JFrame {
     private void btnPrestamo2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrestamo2ActionPerformed
         // TODO add your handling code here:
         PrestamoDAO pr = new PrestamoDAO();
-        pr.registrarPrestamo(txtEPr2.getText(), txtPre2.getText());
+        RevistaDAO lb = new RevistaDAO();
+        Object[] nuevaFila = pr.registrarPrestamo(txtEPr2.getText(), txtPre2.getText());
+        if (nuevaFila != null) {
+            lb.actualizarCantidadReal(tblRevista, txtEPr2.getText(), (int) nuevaFila[8]);
+            lb.actualizarCantidadReal(tblLibros3, txtEPr2.getText(), (int) nuevaFila[8]);
+            modeloPrestamo.addRow(nuevaFila);
+        }
     }//GEN-LAST:event_btnPrestamo2ActionPerformed
 
     private void tblRevistaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblRevistaMouseClicked
@@ -3041,7 +3059,13 @@ public class Dashboard extends javax.swing.JFrame {
     private void btnPrestamo3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrestamo3ActionPerformed
         // TODO add your handling code here:
         PrestamoDAO pr = new PrestamoDAO();
-        pr.registrarPrestamo(txtEPr3.getText(), txtPre3.getText());
+        ArticuloIDAO lb = new ArticuloIDAO();
+        Object[] nuevaFila = pr.registrarPrestamo(txtEPr3.getText(), txtPre3.getText());
+        if (nuevaFila != null) {
+            lb.actualizarCantidadReal(tblArtInves, txtEPr3.getText(), (int) nuevaFila[8]);
+            lb.actualizarCantidadReal(tblLibros3, txtEPr3.getText(), (int) nuevaFila[8]);
+            modeloPrestamo.addRow(nuevaFila);
+        }
     }//GEN-LAST:event_btnPrestamo3ActionPerformed
 
     private void tblArtInvesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblArtInvesMouseClicked
@@ -3055,7 +3079,13 @@ public class Dashboard extends javax.swing.JFrame {
     private void btnPrestamo4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrestamo4ActionPerformed
         // TODO add your handling code here:
         PrestamoDAO pr = new PrestamoDAO();
-        pr.registrarPrestamo(txtEPr4.getText(), txtPre4.getText());
+        VideoDAO lb = new VideoDAO();
+        Object[] nuevaFila = pr.registrarPrestamo(txtEPr4.getText(), txtPre4.getText());
+        if (nuevaFila != null) {
+            lb.actualizarCantidadReal(tblVideo, txtEPr4.getText(), (int) nuevaFila[8]);
+            lb.actualizarCantidadReal(tblLibros5, txtEPr4.getText(), (int) nuevaFila[8]);
+            modeloPrestamo.addRow(nuevaFila);
+        }
     }//GEN-LAST:event_btnPrestamo4ActionPerformed
 
     private void tblVideoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblVideoMouseClicked
@@ -3130,8 +3160,23 @@ public class Dashboard extends javax.swing.JFrame {
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
         // TODO add your handling code here:
-        PrestamoDAO pre = new PrestamoDAO();
-        pre.regresarPrestamo(txtidEP.getText(), txtidPre.getText(), txtidUsupr.getText(),tblPrestamo1);
+        PrestamoDAO pr = new PrestamoDAO();
+        LibroDAO lb = new LibroDAO();
+        PeriodicoDAO p = new PeriodicoDAO();
+        RevistaDAO r = new RevistaDAO();
+        ArticuloIDAO ai = new ArticuloIDAO();
+        VideoDAO v = new VideoDAO();
+        int res = pr.regresarPrestamo(txtidEP.getText(), txtidPre.getText(), txtidUsupr.getText(),tblPrestamo1);
+        lb.actualizarCantidadReal(tblLibros, txtEPr.getText(), res);
+        lb.actualizarCantidadReal(tblLibros1, txtEPr.getText(), res);
+        p.actualizarCantidadReal(tblPeriodico, txtEPr.getText(), res);
+        p.actualizarCantidadReal(tblLibros2, txtEPr.getText(), res);
+        r.actualizarCantidadReal(tblRevista, txtEPr.getText(), res);
+        r.actualizarCantidadReal(tblLibros3, txtEPr.getText(), res);
+        ai.actualizarCantidadReal(tblArtInves, txtEPr.getText(), res);
+        ai.actualizarCantidadReal(tblLibros4, txtEPr.getText(), res);
+        v.actualizarCantidadReal(tblVideo, txtEPr.getText(), res);
+        v.actualizarCantidadReal(tblLibros5, txtEPr.getText(), res);
     }//GEN-LAST:event_btnRegresarActionPerformed
 
     private void limpiarPeriodico(){

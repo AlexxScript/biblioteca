@@ -211,4 +211,14 @@ public class VideoDAO {
             return false;
         }
     }
+    
+    public void actualizarCantidadReal(JTable table, String idE, int nuevaCantidadReal) {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if (model.getValueAt(i, 11).toString().equals(idE)) { 
+                model.setValueAt(nuevaCantidadReal, i, 6);
+                break;
+            }
+        }
+    }
 }

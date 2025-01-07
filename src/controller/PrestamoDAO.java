@@ -77,57 +77,67 @@ public class PrestamoDAO {
         }
     }
     
-    public String registrarPrestamo(String idE, String idUs){
+    public Object[] registrarPrestamo(String idE, String idUs) {
         LocalDate date = LocalDate.now();
         try {
-            
             con = Conexion.conectar();
-            String sqlSele = "SELECT id,estado FROM usuario WHERE nombreusuario = ?";
-            String sqlActualizarInfraccion = "UPDATE usuario SET estado = 'noactivo' WHERE id = ?";
+            String sqlSele = "SELECT id,estado,nombreusuario FROM usuario WHERE nombreusuario = ?";
             String sqlS = "SELECT cantidadreal FROM ejemplar WHERE id = ?";
             String sqlPre = "INSERT INTO prestamos (usuario_id,ejemplar_id,fecha_prestamo,fecha_devolucion,estado) VALUES (?,?,?,?,?)"; 
             String sqlUp = "UPDATE ejemplar SET cantidadreal = cantidadreal - 1 WHERE id = ?";
-            
-            
+
             ps = con.prepareStatement(sqlSele);
             ps.setString(1, idUs);
             rs = ps.executeQuery();
-            
-            if(rs.next()){
+
+            if (rs.next()) {
                 String idusu = rs.getString("id");
-                if(!rs.getString("estado").equals("noactivo")){
+                String estadoUsuario = rs.getString("estado");
+                String nombreUsuario = rs.getString("nombreusuario");
+
+                if (!estadoUsuario.equals("noactivo")) {
                     ps = con.prepareStatement(sqlS);
                     ps.setString(1, idE);
                     rs = ps.executeQuery();
-                    if(rs.next()){             
-                        if(rs.getInt("cantidadreal")>0){
-                           ps = con.prepareStatement(sqlPre);
-                           ps.setString(1,idusu);
-                           ps.setString(2, idE);
-                           ps.setDate(3,Date.valueOf(date));
-                           ps.setDate(4, Date.valueOf(date.plusDays(5)));
-                           ps.setString(5, "prestado");
-                           ps.executeUpdate();
+                    if (rs.next()) {
+                        int cr = rs.getInt("cantidadreal");
+                        if (cr > 0) {
+                            ps = con.prepareStatement(sqlPre, PreparedStatement.RETURN_GENERATED_KEYS);
+                            ps.setString(1, idusu);
+                            ps.setString(2, idE);
+                            ps.setDate(3, Date.valueOf(date));
+                            ps.setDate(4, Date.valueOf(date.plusDays(5)));
+                            ps.setString(5, "prestado");
+                            ps.executeUpdate();
 
-                           ps = con.prepareStatement(sqlUp);
-                           ps.setString(1, idE);
-                           ps.executeUpdate();
+                            ResultSet rsGeneratedKeys = ps.getGeneratedKeys();
+                            if (rsGeneratedKeys.next()) {
+                                int idPrestamo = rsGeneratedKeys.getInt(1);
 
-                           ps = con.prepareStatement(sqlActualizarInfraccion);
-                           ps.setString(1, idusu);
-                           ps.executeUpdate();
-                           return "Prestamo registrado";
+                                ps = con.prepareStatement(sqlUp);
+                                ps.setString(1, idE);
+                                ps.executeUpdate();
+
+                                return new Object[] {
+                                    nombreUsuario,
+                                    date,
+                                    date.plusDays(5),
+                                    "prestado",
+                                    estadoUsuario,
+                                    idPrestamo,
+                                    idE,
+                                    idusu,
+                                    cr-1
+                                };
+                            }
                         }
                     }
-                } else{
-                   return "No puede pedir prestado aún";
+                } else {
+                    return null; 
                 }
             }
-            return "No se encontro un registro";
         } catch (Exception e) {
             System.out.println(e);
-            return e.getMessage();
-
         } finally {
             try {
                 if (rs != null) rs.close();
@@ -137,41 +147,51 @@ public class PrestamoDAO {
                 ex.printStackTrace();
             }
         }
+        return null; 
     }
+
     
-    public void regresarPrestamo(String idE, String idPre, String idUs, JTable jTable) {
+    public int regresarPrestamo(String idE, String idPre, String idUs, JTable jTable) {
         try {
             con = Conexion.conectar();
 
-            // Actualizar estado del préstamo
             String sqlS = "UPDATE prestamos SET estado = 'devuelto' WHERE id = ?";
             ps = con.prepareStatement(sqlS);
             ps.setString(1, idPre);
             ps.executeUpdate();
 
-            // Incrementar cantidad real del ejemplar
             String sqlUp = "UPDATE ejemplar SET cantidadreal = cantidadreal + 1 WHERE id = ?";
             ps = con.prepareStatement(sqlUp);
             ps.setString(1, idE);
             ps.executeUpdate();
+            
+            String sqlQ = "SELECT cantidadreal FROM ejemplar WHERE id = ?";
+            ps = con.prepareStatement(sqlQ);
+            ps.setString(1, idE);
+            rs = ps.executeQuery();
+               
+            if(rs.next()){
+                int cr = rs.getInt("cantidadreal");
 
-            // Cambiar estado del usuario a 'activo'
-            String sqlUs = "UPDATE usuario SET estado = 'activo' WHERE id = ?";
-            ps = con.prepareStatement(sqlUs);
-            ps.setString(1, idUs);
-            ps.executeUpdate();
+                String sqlUs = "UPDATE usuario SET estado = 'activo' WHERE id = ?";
+                ps = con.prepareStatement(sqlUs);
+                ps.setString(1, idUs);
+                ps.executeUpdate();
 
-            // Actualizar el modelo del JTable
-            DefaultTableModel modelo = (DefaultTableModel) jTable.getModel();
-            for (int i = 0; i < modelo.getRowCount(); i++) {
-                if (modelo.getValueAt(i, 5).toString().equals(idPre)) { // Suponiendo que columna 5 es 'idPre'
-                    modelo.setValueAt("devuelto", i, 3); // Actualizar estadoEntrega
-                    break;
+                DefaultTableModel modelo = (DefaultTableModel) jTable.getModel();
+                for (int i = 0; i < modelo.getRowCount(); i++) {
+                    if (modelo.getValueAt(i, 5).toString().equals(idPre)) { 
+                        modelo.removeRow(i); 
+                        break;
+                    }
                 }
+                return cr;
             }
-
+            
+            return -1;
         } catch (Exception e) {
             System.out.println(e);
+            return -1;
         } finally {
             try {
                 if (rs != null) rs.close();
@@ -258,7 +278,7 @@ public class PrestamoDAO {
             
             if(rs.next()){
                 if(rs.getInt("infracciones")==5){
-                    System.out.println("Cuanta inhabilitada");
+                    System.out.println("Cuanta bloqueada");
                 }
             }
         } catch (Exception e) {
@@ -273,4 +293,7 @@ public class PrestamoDAO {
             }
         }
     }
+    
+    
+
 }
