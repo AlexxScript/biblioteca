@@ -4,6 +4,8 @@
  */
 package bibliotecafin;
 
+import ui.RegistrarLogin;
+
 /**
  *
  * @author alejandro ameneyro
@@ -15,6 +17,8 @@ public class BibliotecaFin {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        RegistrarLogin iniciar = new RegistrarLogin();
+        iniciar.setVisible(true);
     }
     
 }

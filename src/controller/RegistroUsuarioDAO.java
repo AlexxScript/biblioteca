@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -44,7 +45,7 @@ public class RegistroUsuarioDAO {
                 lg.setId_biblioteca(rs.getString("id_biblioteca"));
             }
         }catch(SQLException e){
-            System.out.println(e);
+            JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos", "Error de inicio de sesión", JOptionPane.ERROR_MESSAGE);            
         }
         return lg;
     }
@@ -177,6 +178,8 @@ public class RegistroUsuarioDAO {
                     break;
                 }
             }
+            JOptionPane.showMessageDialog(null, "Usuario actualizado");
+
             return true;
         } catch (Exception e) {
             System.out.println(e);
@@ -200,6 +203,7 @@ public class RegistroUsuarioDAO {
                     break;
                 }
             }
+            JOptionPane.showMessageDialog(null, "Usuario eliminado");
             return true;
         } catch (Exception e) {
             System.out.println(e);

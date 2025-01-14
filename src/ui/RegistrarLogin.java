@@ -12,6 +12,7 @@ import controller.BibliotecaDAO;
 import controller.PrestamoDAO;
 import java.time.LocalDate;
 import java.util.Date;
+import javax.swing.JOptionPane;
 /**
  *
  * @author alejandro ameneyro
@@ -317,7 +318,7 @@ public class RegistrarLogin extends javax.swing.JFrame {
         bl.setNombre(nombre);
         String res = b.registrarBiblio(bl);
         txtRespuesta.setText(res);
-
+        JOptionPane.showMessageDialog(null, res);
     }//GEN-LAST:event_btnCrearActionPerformed
 
     private void txtDireccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDireccionActionPerformed
@@ -339,6 +340,7 @@ public class RegistrarLogin extends javax.swing.JFrame {
         bl.setNombre(txtNbiblio.getText());
         String res = rg.registrarUsuario(usuario, bl);
         System.out.println(res);
+        JOptionPane.showMessageDialog(null, res);
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
@@ -358,9 +360,11 @@ public class RegistrarLogin extends javax.swing.JFrame {
                 dispose();
             } else{
                 System.out.println(res);
+                JOptionPane.showMessageDialog(null, res);
             }
         } else{
             System.out.println("datos incorrectos");
+            JOptionPane.showMessageDialog(null, "datos incorrectos");
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
