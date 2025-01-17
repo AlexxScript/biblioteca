@@ -1,0 +1,4 @@
+update prestamos set fecha_devolucion='2025-1-15',  fecha_prestamo='2025-1-10' where usuario_id = 2 and id = 3;
+update prestamos set fecha_prestamo='2025-1-7', fecha_devolucion='2025-1-12' where usuario_id = 2 and id = 3;
+update usuario set infracciones=5 where id=2;
+update prestamos set fecha_prestamo='2025-1-1', fecha_devolucion='2025-1-6' where usuario_id = 2 and id = 4;

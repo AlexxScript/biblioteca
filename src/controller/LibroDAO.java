@@ -49,26 +49,24 @@ public class LibroDAO {
             modeloLibro.setRowCount(0);
 
             while (rs.next()) {
-                Object[] fila = new Object[19];
+                Object[] fila = new Object[17];
                 fila[0] = rs.getString("titulo");
                 fila[1] = rs.getString("editorial");
                 fila[2] = rs.getString("pasta");
                 fila[3] = rs.getString("volumen");
-                fila[4] = rs.getString("tema");
-                fila[5] = rs.getInt("pagina");
-                fila[6] = rs.getString("tipoLibro");
-                fila[7] = rs.getString("autores");
-                fila[8] = rs.getDate("fecha_lanzamiento");
-                fila[9] = rs.getString("idioma");
-                fila[10] = rs.getInt("cantidad");
-                fila[11] = rs.getInt("cantidadreal");
-                fila[12] = rs.getString("pasillo");
-                fila[13] = rs.getString("repisa");
-                fila[14] = rs.getString("anaquel");
-                fila[15] = rs.getString("seccion");
-                fila[16] = rs.getString("idE");
-                fila[17] = rs.getString("idT");
-                fila[18] = rs.getString("idU");
+                fila[4] = rs.getString("tipoLibro");
+                fila[5] = rs.getString("autores");
+                fila[6] = rs.getDate("fecha_lanzamiento");
+                fila[7] = rs.getString("idioma");
+                fila[8] = rs.getInt("cantidad");
+                fila[9] = rs.getInt("cantidadreal");
+                fila[10] = rs.getString("pasillo");
+                fila[11] = rs.getString("repisa");
+                fila[12] = rs.getString("anaquel");
+                fila[13] = rs.getString("seccion");
+                fila[14] = rs.getString("idE");
+                fila[15] = rs.getString("idT");
+                fila[16] = rs.getString("idU");
                 System.out.println(rs.getInt("cantidadreal"));
                 modeloLibro.addRow(fila);
             }
@@ -147,8 +145,7 @@ public class LibroDAO {
             }
 
             return new Object[] {
-                lib.getTitulo(), lib.getEditorial(), lib.getPasta(), lib.getVolumen(), null, 
-                0, 
+                lib.getTitulo(), lib.getEditorial(), lib.getPasta(), lib.getVolumen(),
                 lib.getTipoLibro(), lib.getAutores(), java.sql.Date.valueOf(lib.getFechaLanz()),
                 lib.getIdioma(), lib.getCantidad(), lib.getCantidadReal(), 
                 ubi.getPasillo(), ubi.getRepisa(), ubi.getAnaquel(), ubi.getSeccion(),ejemplarId,libroId,ubicacionId
@@ -248,8 +245,8 @@ public class LibroDAO {
     public void actualizarCantidadReal(JTable table, String idE, int nuevaCantidadReal) {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {
-            if (model.getValueAt(i, 16).toString().equals(idE)) { 
-                model.setValueAt(nuevaCantidadReal, i, 11);
+            if (model.getValueAt(i, 14).toString().equals(idE)) { 
+                model.setValueAt(nuevaCantidadReal, i, 9);
                 break;
             }
         }
