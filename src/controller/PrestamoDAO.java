@@ -40,7 +40,7 @@ public class PrestamoDAO {
                    "FROM prestamos " +
                    "JOIN usuario ON prestamos.usuario_id = usuario.id " +
                    "JOIN ejemplar ON prestamos.ejemplar_id = ejemplar.id " +
-                   "WHERE prestamos.estado = 'prestado' AND ejemplar.id_biblioteca = ?";
+                   "WHERE (prestamos.estado = 'prestado' OR prestamos.estado = 'vencido') AND ejemplar.id_biblioteca = ?";
             con = Conexion.conectar();
             
             ps = con.prepareStatement(query);
@@ -209,12 +209,13 @@ public class PrestamoDAO {
 
         try {
             con = Conexion.conectar();
-            String sqlFechaDevolucion = "SELECT fecha_devolucion FROM prestamos WHERE usuario_id = ?";
+            String sqlFechaDevolucion = "SELECT id,fecha_devolucion FROM prestamos WHERE usuario_id = ? AND (estado = 'prestado' OR estado = 'vencido') ORDER BY id DESC LIMIT 1";
             ps = con.prepareStatement(sqlFechaDevolucion);
             ps.setString(1, idUs);
             rs = ps.executeQuery();
 
             if (rs.next()) {
+                int idPrestamo = rs.getInt("id");
                 LocalDate fechaDevolucion = rs.getDate("fecha_devolucion").toLocalDate();
 
                 if (fechaActual.isAfter(fechaDevolucion)) {
@@ -225,20 +226,6 @@ public class PrestamoDAO {
 
                     if (rs.next()) {
                         String estadoActual = rs.getString("estado");
-
-                        if (estadoActual.equals("activo") && 
-                           (fechaActual.isAfter(fechaDevolucion) || fechaActual.isEqual(fechaDevolucion))) {
-                            String sqlActualizarInfraccion = "UPDATE usuario SET estado = 'noactivo', infracciones = infracciones + 1 WHERE id = ?";
-                            ps = con.prepareStatement(sqlActualizarInfraccion);
-                            ps.setString(1, idUs);
-                            ps.executeUpdate();
-                            return "Tu cuenta estará bloqueada hasta el día "+fechaDevolucion.plusDays(3);
-                        }
-
-                        if (estadoActual.equals("noactivo") && 
-                            (fechaActual.isBefore(fechaDevolucion.plusDays(3)) || fechaActual.isEqual(fechaDevolucion.plusDays(3)))) {
-                            return "Tu cuenta estará bloqueada hasta el día "+fechaDevolucion.plusDays(3);
-                        }
                         
                         String sqlUsb = "SELECT infracciones FROM usuario WHERE id = ?";
                         ps = con.prepareStatement(sqlUsb);
@@ -247,6 +234,25 @@ public class PrestamoDAO {
 
                         if (rs.next() && rs.getInt("infracciones") >= 5) {
                             return "Cuenta bloqueada";
+                        }
+
+                        if (estadoActual.equals("activo") && 
+                           (fechaActual.isAfter(fechaDevolucion) || fechaActual.isEqual(fechaDevolucion))) {
+                            String sqlActualizarInfraccion = "UPDATE usuario SET estado = 'noactivo', infracciones = infracciones + 1 WHERE id = ?";
+                            ps = con.prepareStatement(sqlActualizarInfraccion);
+                            ps.setString(1, idUs);
+                            ps.executeUpdate();
+                            
+                            String sqlS = "UPDATE prestamos SET estado = 'vencido' WHERE id = ?";
+                            ps = con.prepareStatement(sqlS);
+                            ps.setInt(1, idPrestamo);
+                            ps.executeUpdate();
+                            return "Tu cuenta estará bloqueada hasta el día "+fechaDevolucion.plusDays(3);
+                        }
+
+                        if (estadoActual.equals("noactivo") && 
+                            (fechaActual.isBefore(fechaDevolucion.plusDays(3)) || fechaActual.isEqual(fechaDevolucion.plusDays(3)))) {
+                            return "Tu cuenta estará bloqueada hasta el día "+fechaDevolucion.plusDays(3);
                         }
 
                         String sqlReactivarUsuario = "UPDATE usuario SET estado = 'activo' WHERE id = ?";

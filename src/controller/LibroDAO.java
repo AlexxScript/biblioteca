@@ -69,6 +69,7 @@ public class LibroDAO {
                 fila[16] = rs.getString("idE");
                 fila[17] = rs.getString("idT");
                 fila[18] = rs.getString("idU");
+                System.out.println(rs.getInt("cantidadreal"));
                 modeloLibro.addRow(fila);
             }
 
@@ -120,7 +121,7 @@ public class LibroDAO {
             ps.setInt(4, lib.getCantidad());
             ps.setInt(5, ubicacionId);
             ps.setInt(6, Integer.parseInt(idBiblioteca));
-            ps.setInt(7, lib.getCantidad());
+            ps.setInt(7, lib.getCantidadReal());
             ps.executeUpdate();
             
             ResultSet rsEjemplar = ps.getGeneratedKeys();
@@ -149,7 +150,7 @@ public class LibroDAO {
                 lib.getTitulo(), lib.getEditorial(), lib.getPasta(), lib.getVolumen(), null, 
                 0, 
                 lib.getTipoLibro(), lib.getAutores(), java.sql.Date.valueOf(lib.getFechaLanz()),
-                lib.getIdioma(), lib.getCantidad(), 0, 
+                lib.getIdioma(), lib.getCantidad(), lib.getCantidadReal(), 
                 ubi.getPasillo(), ubi.getRepisa(), ubi.getAnaquel(), ubi.getSeccion(),ejemplarId,libroId,ubicacionId
             };
         } catch (SQLException e) {
@@ -215,7 +216,7 @@ public class LibroDAO {
         }
     }
 
-    public boolean eliminarProducto(String libroId, JTable tblLibros, JTable tblLibros1, String idBiblioteca) {
+    public boolean eliminarProducto(String libroId,String eid,String udi, JTable tblLibros, JTable tblLibros1, String idBiblioteca) {
         try {
             con = Conexion.conectar();
 
@@ -223,7 +224,16 @@ public class LibroDAO {
             ps = con.prepareStatement(sqlLibro);
             ps.setString(1, libroId);
             ps.executeUpdate();
-            System.out.println("Libro eliminado: " + libroId);
+            
+            String sqle = "DELETE FROM ejemplar WHERE id = ?";
+            ps = con.prepareStatement(sqle);
+            ps.setString(1, eid);
+            ps.executeUpdate();
+            
+            String sqlub = "DELETE FROM ubicacion WHERE id = ?";
+            ps = con.prepareStatement(sqlub);
+            ps.setString(1, udi);
+            ps.executeUpdate();
 
             DefaultTableModel modeloLibro = (DefaultTableModel) tblLibros.getModel();
             cargarDatos(modeloLibro, tblLibros, tblLibros1,idBiblioteca);

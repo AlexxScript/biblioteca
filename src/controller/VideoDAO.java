@@ -192,7 +192,7 @@ public class VideoDAO {
         }
     }
 
-    public boolean eliminarProducto(String libroId, JTable tblLibros, JTable tblLibros1, String idBiblioteca) {
+    public boolean eliminarProducto(String libroId, String eid,String udi,JTable tblLibros, JTable tblLibros1, String idBiblioteca) {
         try {
             con = Conexion.conectar();
 
@@ -201,6 +201,16 @@ public class VideoDAO {
             ps.setString(1, libroId);
             ps.executeUpdate();
             System.out.println("Video eliminado: " + libroId);
+            
+            String sqle = "DELETE FROM ejemplar WHERE id = ?";
+            ps = con.prepareStatement(sqle);
+            ps.setString(1, eid);
+            ps.executeUpdate();
+            
+            String sqlub = "DELETE FROM ubicacion WHERE id = ?";
+            ps = con.prepareStatement(sqlub);
+            ps.setString(1, udi);
+            ps.executeUpdate();
 
             DefaultTableModel modeloLibro = (DefaultTableModel) tblLibros.getModel();
             cargarDatos(modeloLibro, tblLibros, tblLibros1, idBiblioteca);

@@ -1,0 +1,184 @@
+CREATE SCHEMA IF NOT EXISTS biblioteca;
+
+CREATE TABLE IF NOT EXISTS biblioteca.ejemplar (
+  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  autores varchar(500),
+  fechaLanz date,
+  idioma varchar(500),
+  cantidad int,
+  ubicacion_id int,
+  id_biblioteca int,
+  cantidadreal int
+);
+
+CREATE UNIQUE INDEX biblioteca_PRIMARY ON biblioteca.ejemplar (id);
+CREATE INDEX biblioteca_ubicacion_id ON biblioteca.ejemplar (ubicacion_id);
+CREATE INDEX biblioteca_id_biblioteca ON biblioteca.ejemplar (id_biblioteca);
+
+CREATE TABLE IF NOT EXISTS biblioteca.videocientifico (
+  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  nombre varchar(500),
+  duracion varchar(500),
+  id_ejemplar int
+);
+
+CREATE UNIQUE INDEX biblioteca_PRIMARY ON biblioteca.videocientifico (id);
+CREATE INDEX biblioteca_id_ejemplar ON biblioteca.videocientifico (id_ejemplar);
+
+CREATE TABLE IF NOT EXISTS biblioteca.usuario (
+  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  nombre varchar(500),
+  perfil varchar(500),
+  apellidop varchar(500),
+  apellidom varchar(500),
+  prestamo tinyint,
+  direccion varchar(500),
+  telefono varchar(500),
+  nombreusuario varchar(500),
+  contrasenia varchar(500),
+  id_biblioteca int,
+  infracciones int DEFAULT 0,
+  estado varchar(500) DEFAULT 'activo'
+);
+
+CREATE UNIQUE INDEX biblioteca_PRIMARY ON biblioteca.usuario (id);
+CREATE INDEX biblioteca_id_biblioteca ON biblioteca.usuario (id_biblioteca);
+
+CREATE TABLE IF NOT EXISTS biblioteca.periodico (
+  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  nombre varchar(500),
+  distribuidor varchar(500),
+  empresa varchar(500),
+  tipoRevista varchar(500),
+  ejemplar_id int
+);
+
+CREATE UNIQUE INDEX biblioteca_PRIMARY ON biblioteca.periodico (id);
+CREATE INDEX biblioteca_ejemplar_id ON biblioteca.periodico (ejemplar_id);
+
+CREATE TABLE IF NOT EXISTS biblioteca.articulo (
+  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  tituloArt varchar(500),
+  autores varchar(500),
+  fechaPublicacion date,
+  id_periodico int,
+  id_revista int
+);
+
+CREATE UNIQUE INDEX biblioteca_PRIMARY ON biblioteca.articulo (id);
+CREATE INDEX biblioteca_id_periodico ON biblioteca.articulo (id_periodico);
+CREATE INDEX biblioteca_id_revista ON biblioteca.articulo (id_revista);
+
+CREATE TABLE IF NOT EXISTS biblioteca.biblioteca (
+  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  nombre varchar(500)
+);
+
+CREATE UNIQUE INDEX biblioteca_PRIMARY ON biblioteca.biblioteca (id);
+
+CREATE TABLE IF NOT EXISTS biblioteca.ubicacion (
+  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  pasillo varchar(500),
+  repisa varchar(500),
+  anaquel varchar(500),
+  seccion varchar(500)
+);
+
+CREATE UNIQUE INDEX biblioteca_PRIMARY ON biblioteca.ubicacion (id);
+
+CREATE TABLE IF NOT EXISTS biblioteca.prestamos (
+  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  usuario_id int,
+  ejemplar_id int,
+  fecha_prestamo date,
+  fecha_devolucion date,
+  estado varchar(500) DEFAULT 'pendiente'
+);
+
+CREATE UNIQUE INDEX biblioteca_PRIMARY ON biblioteca.prestamos (id);
+CREATE INDEX biblioteca_usuario_id ON biblioteca.prestamos (usuario_id);
+CREATE INDEX biblioteca_ejemplar_id ON biblioteca.prestamos (ejemplar_id);
+
+CREATE TABLE IF NOT EXISTS biblioteca.libro (
+  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  titulo varchar(500),
+  editorial varchar(500),
+  pasta varchar(500),
+  volumen varchar(500),
+  tipoLibro varchar(500),
+  libro_id int,
+  tema varchar(500),
+  pagina varchar(500)
+);
+
+CREATE UNIQUE INDEX biblioteca_PRIMARY ON biblioteca.libro (id);
+CREATE INDEX biblioteca_libro_id ON biblioteca.libro (libro_id);
+
+CREATE TABLE IF NOT EXISTS biblioteca.revista (
+  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  nombre varchar(500),
+  distribuidor varchar(500),
+  empresa varchar(500),
+  tipoRevista varchar(500),
+  ejemplar_id int
+);
+
+CREATE UNIQUE INDEX biblioteca_PRIMARY ON biblioteca.revista (id);
+CREATE INDEX biblioteca_ejemplar_id ON biblioteca.revista (ejemplar_id);
+
+CREATE TABLE IF NOT EXISTS biblioteca.articulocientifico (
+  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  areaespecialidad varchar(500),
+  fechaescr date,
+  insitutoProveniencia varchar(500),
+  articulocientifico_id int,
+  nombreart varchar(500)
+);
+
+CREATE UNIQUE INDEX biblioteca_PRIMARY ON biblioteca.articulocientifico (id);
+CREATE INDEX biblioteca_articulocientifico_id ON biblioteca.articulocientifico (articulocientifico_id);
+
+-- Eliminar las claves foráneas existentes
+ALTER TABLE biblioteca.articulo DROP FOREIGN KEY articulo_ibfk_1;
+ALTER TABLE biblioteca.articulo DROP FOREIGN KEY articulo_ibfk_2;
+ALTER TABLE biblioteca.articulocientifico DROP FOREIGN KEY articulocientifico_ibfk_1;
+ALTER TABLE biblioteca.ejemplar DROP FOREIGN KEY ejemplar_ibfk_1;
+ALTER TABLE biblioteca.ejemplar DROP FOREIGN KEY ejemplar_ibfk_2;
+ALTER TABLE biblioteca.libro DROP FOREIGN KEY libro_ibfk_1;
+ALTER TABLE biblioteca.periodico DROP FOREIGN KEY periodico_ibfk_1;
+ALTER TABLE biblioteca.prestamos DROP FOREIGN KEY prestamos_ibfk_1;
+ALTER TABLE biblioteca.prestamos DROP FOREIGN KEY prestamos_ibfk_2;
+ALTER TABLE biblioteca.revista DROP FOREIGN KEY revista_ibfk_1;
+ALTER TABLE biblioteca.usuario DROP FOREIGN KEY usuario_ibfk_1;
+ALTER TABLE biblioteca.videocientifico DROP FOREIGN KEY videocientifico_ibfk_1;
+
+-- Crear nuevamente las claves foráneas con ON DELETE CASCADE
+ALTER TABLE biblioteca.articulo 
+ADD CONSTRAINT articulo_ibfk_1 FOREIGN KEY (id_periodico) REFERENCES biblioteca.periodico (id) ON DELETE CASCADE,
+ADD CONSTRAINT articulo_ibfk_2 FOREIGN KEY (id_revista) REFERENCES biblioteca.revista (id) ON DELETE CASCADE;
+
+ALTER TABLE biblioteca.articulocientifico 
+ADD CONSTRAINT articulocientifico_ibfk_1 FOREIGN KEY (articulocientifico_id) REFERENCES biblioteca.ejemplar (id) ON DELETE CASCADE;
+
+ALTER TABLE biblioteca.ejemplar 
+ADD CONSTRAINT ejemplar_ibfk_1 FOREIGN KEY (ubicacion_id) REFERENCES biblioteca.ubicacion (id) ON DELETE CASCADE,
+ADD CONSTRAINT ejemplar_ibfk_2 FOREIGN KEY (id_biblioteca) REFERENCES biblioteca.biblioteca (id) ON DELETE CASCADE;
+
+ALTER TABLE biblioteca.libro 
+ADD CONSTRAINT libro_ibfk_1 FOREIGN KEY (libro_id) REFERENCES biblioteca.ejemplar (id) ON DELETE CASCADE;
+
+ALTER TABLE biblioteca.periodico 
+ADD CONSTRAINT periodico_ibfk_1 FOREIGN KEY (ejemplar_id) REFERENCES biblioteca.ejemplar (id) ON DELETE CASCADE;
+
+ALTER TABLE biblioteca.prestamos 
+ADD CONSTRAINT prestamos_ibfk_1 FOREIGN KEY (usuario_id) REFERENCES biblioteca.usuario (id) ON DELETE CASCADE,
+ADD CONSTRAINT prestamos_ibfk_2 FOREIGN KEY (ejemplar_id) REFERENCES biblioteca.ejemplar (id) ON DELETE CASCADE;
+
+ALTER TABLE biblioteca.revista 
+ADD CONSTRAINT revista_ibfk_1 FOREIGN KEY (ejemplar_id) REFERENCES biblioteca.ejemplar (id) ON DELETE CASCADE;
+
+ALTER TABLE biblioteca.usuario 
+ADD CONSTRAINT usuario_ibfk_1 FOREIGN KEY (id_biblioteca) REFERENCES biblioteca.biblioteca (id) ON DELETE CASCADE;
+
+ALTER TABLE biblioteca.videocientifico 
+ADD CONSTRAINT videocientifico_ibfk_1 FOREIGN KEY (id_ejemplar) REFERENCES biblioteca.ejemplar (id) ON DELETE CASCADE;

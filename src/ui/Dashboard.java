@@ -2520,7 +2520,8 @@ public class Dashboard extends javax.swing.JFrame {
     private void btnEl1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEl1ActionPerformed
         // TODO add your handling code here:
         PeriodicoDAO lbc = new PeriodicoDAO();
-        lbc.eliminarProducto(txtidT1.getText(), tblPeriodico, tblLibros2,logg.getId_biblioteca());
+        lbc.eliminarProducto(txtidT1.getText(),txtidE1.getText(),txtidU1.getText(), tblPeriodico, tblLibros2,logg.getId_biblioteca());
+        //lbc.eliminarProducto(txtidT1.getText(), tblPeriodico, tblLibros2,logg.getId_biblioteca());
     }//GEN-LAST:event_btnEl1ActionPerformed
 
     private void btnUp1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUp1ActionPerformed
@@ -2598,7 +2599,7 @@ public class Dashboard extends javax.swing.JFrame {
     private void btnElActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnElActionPerformed
         // TODO add your handling code here:
         LibroDAO lbc = new LibroDAO();
-        lbc.eliminarProducto(txtidT.getText(), tblLibros, tblLibros1,logg.getId_biblioteca());
+        lbc.eliminarProducto(txtidT.getText(),txtidE.getText(),txtidU.getText(), tblLibros, tblLibros1,logg.getId_biblioteca());
     }//GEN-LAST:event_btnElActionPerformed
 
     private void btnUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpActionPerformed
@@ -2671,8 +2672,8 @@ public class Dashboard extends javax.swing.JFrame {
             txtAutor.setText(receptor.getModel().getValueAt(receptor.getSelectedRow(), 7).toString());
             txtFLanz.setText(receptor.getModel().getValueAt(receptor.getSelectedRow(), 8).toString());
             txtIdioma.setText(receptor.getModel().getValueAt(receptor.getSelectedRow(), 9).toString());
-            spCantidad.setValue(receptor.getModel().getValueAt(receptor.getSelectedRow(), 10));
-            spCaR4.setValue(receptor.getModel().getValueAt(receptor.getSelectedRow(), 11));
+            spCantidad.setValue(Integer.parseInt(receptor.getModel().getValueAt(receptor.getSelectedRow(), 10).toString()));
+            spCaR4.setValue(Integer.parseInt(receptor.getModel().getValueAt(receptor.getSelectedRow(), 11).toString()));
 
             txtPasillo.setText(receptor.getModel().getValueAt(receptor.getSelectedRow(), 12).toString());
             txtRepisa.setText(receptor.getModel().getValueAt(receptor.getSelectedRow(), 13).toString());
@@ -2760,7 +2761,8 @@ public class Dashboard extends javax.swing.JFrame {
     private void btnEl2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEl2ActionPerformed
         // TODO add your handling code here:
         RevistaDAO rev = new RevistaDAO();
-        rev.eliminarProducto(txtidT3.getText(), tblRevista, tblLibros4,logg.getId_biblioteca());
+        rev.eliminarProducto(txtidT3.getText(), txtidE3.getText(),txtidU3.getText(),tblRevista, tblLibros4,logg.getId_biblioteca());
+
     }//GEN-LAST:event_btnEl2ActionPerformed
 
     private void tblLibros4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblLibros4MouseClicked
@@ -2924,6 +2926,8 @@ public class Dashboard extends javax.swing.JFrame {
 
     private void btnEl3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEl3ActionPerformed
         // TODO add your handling code here:
+        ArticuloIDAO rev = new ArticuloIDAO();
+        rev.eliminarProducto(txtidT2.getText(), txtidE2.getText(),txtidU2.getText(),tblArtInves, tblLibros3,logg.getId_biblioteca());
     }//GEN-LAST:event_btnEl3ActionPerformed
 
     private void btnEl4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEl4ActionPerformed
@@ -2931,8 +2935,8 @@ public class Dashboard extends javax.swing.JFrame {
         VideoCientifico vid = new VideoCientifico();
         VideoDAO vd = new VideoDAO();
         Ubicacion ub = new Ubicacion();
-        
-        vd.eliminarProducto(txtidT4.getText(), tblVideo, tblLibros5, logg.getId_biblioteca());
+        RevistaDAO rev = new RevistaDAO();
+        vd.eliminarProducto(txtidT4.getText(),txtidE4.getText(),txtidU4.getText(), tblVideo, tblLibros5, logg.getId_biblioteca());
     }//GEN-LAST:event_btnEl4ActionPerformed
 
     private void btnLimL4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimL4ActionPerformed
